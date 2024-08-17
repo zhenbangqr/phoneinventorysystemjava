@@ -24,7 +24,7 @@ class Product {
 
 public class ReadFromFile {
     public static void main(String[] args) {
-        String fileName = "POCO.txt"; // Replace with your actual file name
+        String fileName = "Apple.txt"; // Replace with your actual file name
         ArrayList<Product> productList = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
