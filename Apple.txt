@@ -1,6 +1,9 @@
-SKU|Model|RAM|ROM|Color|Price
-A0001|iPhone 15|6GB|128GB|Yellow|3999
-A0002|iPhone 15|6GB|128GB|Black|3999
-A0003|iPhone 15|6GB|128GB|Pink|3999
-A0004|iPhone 15|6GB|128GB|Blue|3999
-A0005|iPhone 15|6GB|128GB|Green|3999
+SKU|Model|RAM|ROM|Color|Price|Type
+A0001|iPhone 15|6GB|128GB|Yellow|3999|Phone
+A0002|iPhone 15|6GB|128GB|Black|3999|Phone
+A0003|iPhone 15|6GB|128GB|Pink|3999|Phone
+A0004|iPhone 15|6GB|128GB|Blue|3999|Phone
+A0005|iPhone 15|6GB|128GB|Green|3999|Phone
+A0006|iPad Air 6th Generation|8GB|128GB|Pink|3999|Tablet
+A0006|iPad Air 6th Generation|8GB|128GB|Purple|3999|Tablet
+A0006|iPad Air 6th Generation|8GB|128GB|Blue|3999|Tablet
