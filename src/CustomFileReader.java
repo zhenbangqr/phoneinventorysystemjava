@@ -4,10 +4,10 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileReader {
+public class CustomFileReader {
     private String fileName;
 
-    public FileReader(String fileName) {
+    public CustomFileReader(String fileName) {
         this.fileName = fileName;
     }
 

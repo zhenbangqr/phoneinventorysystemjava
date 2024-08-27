@@ -1,6 +1,6 @@
-Staff,
-Staff,
-Staff,
+Staff,ST001,Tfs-0316,Warehouse,Tiong Fatt Siong,tiong@gmail.com,03/16,01159424214
+Staff,ST002,Tfs-0316,Warehouse,Tiong Fatt Siong,tiong@gmail.com,03/16,01159424214
+Staff,ST003,Tfs-0316,Store,Tiong Fatt Siong,tiong@gmail.com,03/16,01159424214
 Supplier,
 Supplier,
 Supplier,
