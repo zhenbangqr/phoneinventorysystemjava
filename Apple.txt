@@ -5,5 +5,5 @@ A0003|iPhone 15|6GB|128GB|Pink|3999|Phone
 A0004|iPhone 15|6GB|128GB|Blue|3999|Phone
 A0005|iPhone 15|6GB|128GB|Green|3999|Phone
 A0006|iPad Air 6th Generation|8GB|128GB|Pink|3999|Tablet
-A0006|iPad Air 6th Generation|8GB|128GB|Purple|3999|Tablet
-A0006|iPad Air 6th Generation|8GB|128GB|Blue|3999|Tablet
+A0007|iPad Air 6th Generation|8GB|128GB|Purple|3999|Tablet
+A0008|iPad Air 6th Generation|8GB|128GB|Blue|3999|Tablet

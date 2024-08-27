@@ -20,13 +20,13 @@ public class Staff extends Person {
     public void createAndShowGUI() {
         // Create a frame
         JFrame frame = new JFrame("Workplace Selection");
-        frame.setSize(600, 400);  // Frame size
+        frame.setSize(800, 600);  // Frame size
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
 
         // Create radio buttons
         warehouseRadioButton = new JRadioButton("Warehouse");
-        storeRadioButton = new JRadioButton("Store");
+        storeRadioButton = new JButton("Store");
 
         // Group the radio buttons
         siteGroup = new ButtonGroup();
