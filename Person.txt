@@ -1,6 +1,2 @@
-Staff,ST001,Tfs-0316,Warehouse,Tiong Fatt Siong,tiong@gmail.com,03/16,01159424214
-Staff,ST002,Tfs-0316,Warehouse,Tiong Fatt Siong,tiong@gmail.com,03/16,01159424214
-Staff,ST003,Tfs-0316,Store,Tiong Fatt Siong,tiong@gmail.com,03/16,01159424214
-Supplier,
-Supplier,
-Supplier,
+Staff,ST001,Tfs-0316,Warehouse,Tiong Fatt Siong,tiong@gmail.com,16/03,01159424214
+Staff,ST002,ZBQR1028,Store,Liow Zhen Bang,zbqr@gmail.com,12/01,0167719430

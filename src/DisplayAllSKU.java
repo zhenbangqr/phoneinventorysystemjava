@@ -30,14 +30,19 @@ class Product {
     }
 }
 
-public class ReadFromFile {
+public class DisplayAllSKU {
 
     private static JTable table;
     private static DefaultTableModel tableModel;
     private static Map<String, String> manufacturerFiles = new HashMap<>();
     private static JComboBox<String> typeFilterComboBox;
 
-    public static void main(String[] args) {
+    private JFrame parentFrame; // Store the reference to the Menu frame
+
+    public DisplayAllSKU(JFrame parentFrame, String staffID, String staffName) {
+        this.parentFrame = parentFrame;
+        parentFrame.dispose(); // Close the parent (Menu) frame
+
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Product Viewer");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -99,6 +104,21 @@ public class ReadFromFile {
             filterPanel.add(new JLabel("Filter by Type:"));
             filterPanel.add(typeFilterComboBox);
             frame.add(filterPanel, BorderLayout.NORTH);
+
+            // Back button
+            JButton backButton = new JButton("Back to Menu");
+            backButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    frame.dispose();
+                    // Replace placeholders with actual ID and name retrieval logic
+                    new Menu(staffID, staffName);
+                }
+            });
+
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            buttonPanel.add(backButton);
+            frame.add(buttonPanel, BorderLayout.SOUTH);
         });
     }
 
@@ -169,7 +189,6 @@ public class ReadFromFile {
         }
     }
 
-    // Implement getUniqueTypes method to extract unique types from productList
     private static Set<String> getUniqueTypes(ArrayList<Product> productList) {
         Set<String> uniqueTypes = new HashSet<>();
         for (Product product : productList) {

@@ -1,6 +1,10 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Staff extends Person {
     private String ID;
@@ -16,68 +20,75 @@ public class Staff extends Person {
         this.site = site;
     }
 
-    public void chooseWorkPlace() {
-        String[] options = {"Warehouse", "Store"};
-        int choice = JOptionPane.showOptionDialog(
-                null,
-                "Where do you work?",
-                "Workplace Selection",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[0]
-        );
-
-        if (choice == 0) {
-            site = "Warehouse";
-        } else if (choice == 1) {
-            site = "Store";
-        } else {
-            System.out.println("No Selection made.");
-        }
-    }
-
     public void createAndShowGUI() {
         // Create a frame
-        JFrame frame = new JFrame("Workplace Selection");
-        frame.setSize(600, 400);  // Increased size of the frame
+        JFrame frame = new JFrame("Staff Login");
+        frame.setSize(800, 600);  // Increased size of the frame
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
 
-        // Create buttons
-        warehouseButton = new JButton("Warehouse");
-        storeButton = new JButton("Store");
+            ImageIcon imageIcon = new ImageIcon("header2.png");
+            Image image = imageIcon.getImage();
+            Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
+            imageIcon = new ImageIcon(scaledImage);
 
-        // Set button bounds (position and size)
-        warehouseButton.setBounds(150, 100, 120, 50);  // Increased button size and adjusted position
-        storeButton.setBounds(330, 100, 120, 50);      // Increased button size and adjusted position
+            JLabel imageLabel = new JLabel(imageIcon);
+            imageLabel.setBounds(0, 0, frame.getWidth(), 200);
+            frame.add(imageLabel);
 
-        // Add action listeners
-        warehouseButton.addActionListener(new ActionListener() {
+        // Create login components
+        JLabel idLabel = new JLabel("ID:");
+        JTextField idField = new JTextField(20);
+        JLabel passwordLabel = new JLabel("Password:");
+        JPasswordField passwordField = new JPasswordField(20);
+        JButton loginButton = new JButton("Login");
+
+        // Position login components
+        idLabel.setBounds(250, 250, 80, 25);
+        idField.setBounds(330, 250, 160, 25);
+        passwordLabel.setBounds(250, 280, 80, 25);
+        passwordField.setBounds(330, 280, 160, 25);
+        loginButton.setBounds(330, 320, 80, 25);
+
+        // Add login components to the frame
+        frame.add(idLabel);
+        frame.add(idField);
+        frame.add(passwordLabel);
+        frame.add(passwordField);
+        frame.add(loginButton);
+
+        // Login button action listener
+        loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "User works at Warehouse.");
-                site = "Warehouse";
+                String enteredID = idField.getText();
+                String enteredPassword = new String(passwordField.getPassword());
+
+                try {
+                    BufferedReader reader = new BufferedReader(new FileReader("Person.txt"));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        String[] data = line.split(",");
+                        // Check if the entered ID and password match
+                        if (data.length >= 4 && data[1].equals(enteredID) && data[2].equals(enteredPassword)) {
+                            site = data[3];
+                            frame.dispose(); // Close the login window
+                            new Menu(data[1], data[4]); // Open the menu window, pass staffID(data[1]) and staffName(data[4])
+                            return;
+                        }
+                    }
+                    reader.close();
+                    JOptionPane.showMessageDialog(null, "Invalid ID or password.");
+                } catch (IOException ex) {
+                    System.err.println("Error reading staff data: " + ex.getMessage());
+                    JOptionPane.showMessageDialog(null, "Error occurred during login.");
+                }
             }
         });
 
-        storeButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "User works at Store.");
-                site = "Store";
-            }
-        });
-
-        // Add buttons to the frame
-        frame.add(warehouseButton);
-        frame.add(storeButton);
-
-        // Display the frame
         frame.setVisible(true);
     }
 
     public static void main(String[] args) {
-        // Create a Staff instance and show the GUI
         Staff staff = new Staff("John Doe", "john@example.com", "01/01/1980", "123-456-7890", "ID123", "password", "");
         staff.createAndShowGUI();
     }
