@@ -37,8 +37,8 @@ public class Menu extends JFrame {
         JButton menuButton4 = new JButton("Placeholder 4");
         JButton menuButton5 = new JButton("Placeholder 5");
         JButton menuButton6 = new JButton("Placeholder 6");
-        JButton menuButton7 = new JButton("Placeholder 7");
-        JButton menuButton8 = new JButton("Profile");
+        JButton menuButton7 = new JButton("Profile");
+        JButton menuButton8 = new JButton("Logout");
 
         buttonPanel.add(menuButton1);
         buttonPanel.add(menuButton2);
@@ -54,6 +54,14 @@ public class Menu extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
                 new DisplayAllSKU(Menu.this, staffID, staffName); // Pass the Menu frame reference
+            }
+        });
+
+        menuButton8.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Close the current Menu frame
+                Staff.loginPage();
             }
         });
 

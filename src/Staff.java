@@ -9,7 +9,6 @@ import java.io.IOException;
 public class Staff extends Person {
     private String ID;
     private String password;
-    private String site; // Staff for Warehouse or Store
     private JButton warehouseButton;
     private JButton storeButton;
 
@@ -17,10 +16,9 @@ public class Staff extends Person {
         super(name, email, birthDay, phoneNum);
         this.ID = ID;
         this.password = password;
-        this.site = site;
     }
 
-    public void createAndShowGUI() {
+    public static void loginPage() {
         // Create a frame
         JFrame frame = new JFrame("Staff Login");
         frame.setSize(800, 600);  // Increased size of the frame
@@ -70,7 +68,6 @@ public class Staff extends Person {
                         String[] data = line.split(",");
                         // Check if the entered ID and password match
                         if (data.length >= 4 && data[1].equals(enteredID) && data[2].equals(enteredPassword)) {
-                            site = data[3];
                             frame.dispose(); // Close the login window
                             new Menu(data[1], data[4]); // Open the menu window, pass staffID(data[1]) and staffName(data[4])
                             return;
@@ -90,6 +87,6 @@ public class Staff extends Person {
 
     public static void main(String[] args) {
         Staff staff = new Staff("John Doe", "john@example.com", "01/01/1980", "123-456-7890", "ID123", "password", "");
-        staff.createAndShowGUI();
+        staff.loginPage();
     }
 }
