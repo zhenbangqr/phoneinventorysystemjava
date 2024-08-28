@@ -1,2 +1,3 @@
-Staff,ST001,Tfs-0316,Warehouse,Tiong Fatt Siong,tiong@gmail.com,16/03,01159424214
-Staff,ST002,ZBQR1028,Store,Liow Zhen Bang,zbqr@gmail.com,12/01,0167719430
+Staff,ST001,Tfs-0316,Warehouse,Tiong Fatt Siong,tiong@gmail.com,16/03/2005,01159424214
+Staff,ST002,ZBQR1028,Warehouse,Liow Zhen Bang,zbqr@gmail.com,12/01/2005,0167719430
+Staff,ST003,MWKK,Warehouse,Melvin Wong Ka Kian,mwkk@gmail.com,28/08/2005,0167711234
