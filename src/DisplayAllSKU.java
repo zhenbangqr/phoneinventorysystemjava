@@ -5,6 +5,8 @@ import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -65,7 +67,7 @@ public class DisplayAllSKU {
 
             // Create menu bar and menu
             JMenuBar menuBar = new JMenuBar();
-            JMenu manufacturerMenu = new JMenu("Manufacturer");
+            JMenu manufacturerMenu = new JMenu("Manufacturer ↓");
             menuBar.add(manufacturerMenu);
 
             // Add manufacturer options to menu (replace with your actual file names)
@@ -73,6 +75,7 @@ public class DisplayAllSKU {
             addManufacturerMenuItem(manufacturerMenu, "Samsung", "Samsung.txt");
             addManufacturerMenuItem(manufacturerMenu, "POCO", "POCO.txt");
             addManufacturerMenuItem(manufacturerMenu, "Nothing", "nothing.txt");
+            addManufacturerMenuItem(manufacturerMenu, "Xiaomi", "Xiaomi.txt");
             // Add more manufacturers as needed
 
             // Create type filter JComboBox
@@ -99,10 +102,23 @@ public class DisplayAllSKU {
                 }
             });
 
-            // Add JComboBox to frame
+            // Add JComboBox and search field to frame
             JPanel filterPanel = new JPanel();
             filterPanel.add(new JLabel("Filter by Type:"));
             filterPanel.add(typeFilterComboBox);
+
+            // Search field
+            JTextField searchField = new JTextField(20);
+            searchField.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyReleased(KeyEvent e) {
+                    String searchText = searchField.getText();
+                    filterTableBySearch(searchText);
+                }
+            });
+            filterPanel.add(new JLabel("Search:"));
+            filterPanel.add(searchField);
+
             frame.add(filterPanel, BorderLayout.NORTH);
 
             // Back button
@@ -131,6 +147,13 @@ public class DisplayAllSKU {
 
                 // Update typeFilterComboBox with new types
                 Set<String> uniqueTypes = getUniqueTypes(readProductsFromFile(fileName));
+
+                // **Remove the listener temporarily**
+                ActionListener[] listeners = typeFilterComboBox.getActionListeners();
+                for (ActionListener listener : listeners) {
+                    typeFilterComboBox.removeActionListener(listener);
+                }
+
                 typeFilterComboBox.removeAllItems();
                 typeFilterComboBox.addItem("All");
                 for (String type : uniqueTypes) {
@@ -139,6 +162,11 @@ public class DisplayAllSKU {
 
                 // Set the selected item to "All" after updating the items
                 typeFilterComboBox.setSelectedItem("All");
+
+                // **Add the listener back**
+                for (ActionListener listener : listeners) {
+                    typeFilterComboBox.addActionListener(listener);
+                }
 
                 // Now you can safely filter
                 filterTableByType("All");
@@ -186,6 +214,17 @@ public class DisplayAllSKU {
             sorter.setRowFilter(null); // Show all rows
         } else {
             sorter.setRowFilter(RowFilter.regexFilter(selectedType, 6)); // Filter by Type column (index 6)
+        }
+    }
+
+    private static void filterTableBySearch(String searchText) {
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
+        table.setRowSorter(sorter);
+
+        if (searchText.trim().length() == 0) {
+            sorter.setRowFilter(null); // If search is empty, show all rows
+        } else {
+            sorter.setRowFilter(RowFilter.regexFilter("(?i)" + searchText)); // Case-insensitive search
         }
     }
 
