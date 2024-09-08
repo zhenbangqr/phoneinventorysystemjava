@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 
 public class Menu extends JFrame {
 
-    public Menu(String staffID, String staffName) {
+    public Menu(String staffID, String staffName, String staffEmail, String staffDOB, String staffPhone, String staffSite) {
         setTitle("Staff Menu");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,8 +53,16 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
-                new DisplayAllSKU(Menu.this, staffID, staffName); // Pass the Menu frame reference
+                new DisplayAllSKU(Menu.this, staffID, staffName, staffEmail, staffDOB, staffPhone, staffSite); // Pass the Menu frame reference
             }
+        });
+
+        menuButton7.addActionListener(new ActionListener() {
+         @Override
+            public void actionPerformed(ActionEvent e) {
+             dispose();
+             Staff.profilePage(Menu.this, staffID, staffName, staffEmail, staffDOB, staffPhone, staffSite);
+         }
         });
 
         menuButton8.addActionListener(new ActionListener() {
