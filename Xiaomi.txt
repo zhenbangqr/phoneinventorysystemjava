@@ -8,14 +8,17 @@ XM0006|Xiaomi 13T Pro|12GB|512GB|Black|2499|Phone
 XM0007|Xiaomi 13T Pro|12GB|1024GB|White|2699|Phone
 XM0008|Xiaomi 13T Pro|12GB|1024GB|Blue|2699|Phone
 XM0009|Xiaomi 13T Pro|12GB|1024GB|Black|2699|Phone
+
 XM0010|Xiaomi 14|12GB|256GB|Black|3499|Phone
 XM0011|Xiaomi 14|12GB|256GB|Green|3499|Phone
 XM0012|Xiaomi 14|12GB|256GB|White|3499|Phone
 XM0013|Xiaomi 14|12GB|512GB|Black|3699|Phone
 XM0014|Xiaomi 14|12GB|512GB|Green|3699|Phone
 XM0015|Xiaomi 14|12GB|512GB|White|3699|Phone
+
 XM0016|Xiaomi 14 Ultra|16GB|512GB|Black|5199|Phone
 XM0017|Xiaomi 14 Ultra|16GB|512GB|White|5199|Phone
+
 XM0018|Xiaomi Pad 6|6GB|128GB|Gray|1099|Tablet
 XM0019|Xiaomi Pad 6|6GB|128GB|Blue|1099|Tablet
 XM0020|Xiaomi Pad 6|6GB|128GB|Gold|1099|Tablet
