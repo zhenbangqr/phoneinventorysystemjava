@@ -4,6 +4,10 @@ public class Person {
     protected String birthDay;
     protected String phoneNum;
 
+    public Person(){
+
+    }
+
     public Person(String name, String email, String birthDay, String phoneNum) {
         this.name = name;
         this.email = email;
@@ -42,4 +46,5 @@ public class Person {
     public void setPhoneNum(String phoneNum) {
         this.phoneNum = phoneNum;
     }
+
 }

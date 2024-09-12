@@ -16,7 +16,11 @@ public class Staff extends Person {
     private JButton warehouseButton;
     private JButton storeButton;
 
-    public Staff(String name, String email, String birthDay, String phoneNum, String ID, String password, String site) {
+    public Staff(){
+
+    }
+
+    public Staff(String ID, String password, String site, String name, String email, String birthDay, String phoneNum) {
         super(name, email, birthDay, phoneNum);
         this.ID = ID;
         this.password = password;
@@ -91,9 +95,9 @@ public class Staff extends Person {
                         // Check if the entered ID and password match, considering the new format
                         if (data.length >= 7 && data[1].equals(enteredID) && data[2].equals(enteredPassword)) {
                             frame.dispose(); // Close the login window
-                            Staff loggedInStaff = new Staff(data[4], data[5], data[6], data[7], data[1], data[2], data[3]);
+                            Staff loggedInStaff = new Staff(data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
                             loggedInStaff.checkBirthday(); // Check for birthday after successful login
-                            new Menu(data[1], data[4]); // Open the menu window
+                            new Menu(loggedInStaff); // Open the menu window
                             return;
                         }
                     }
@@ -118,7 +122,19 @@ public class Staff extends Person {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        Staff.loginPage(); // Call the static loginPage method directly
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

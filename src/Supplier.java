@@ -9,4 +9,5 @@ public class Supplier extends Person {
         this.Address = Address;
         this.productBrand = productBrand;
     }
+
 }

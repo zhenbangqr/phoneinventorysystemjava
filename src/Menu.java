@@ -5,8 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Menu extends JFrame {
-
-    public Menu(String staffID, String staffName) {
+    public Menu(Staff logginStaff) {
         setTitle("Staff Menu");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -21,7 +20,7 @@ public class Menu extends JFrame {
         add(imageLabel, BorderLayout.NORTH);
 
         // Welcome message box
-        JLabel welcomeLabel = new JLabel("Welcome, " + staffID + " " + staffName + "!", SwingConstants.CENTER);
+        JLabel welcomeLabel = new JLabel("Welcome, " + logginStaff.getID() + " " + logginStaff.getName() + "!", SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 16));
         JPanel welcomePanel = new JPanel(new FlowLayout());
         welcomePanel.add(welcomeLabel);
@@ -53,7 +52,14 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
-                new DisplayAllSKU(Menu.this, staffID, staffName); // Pass the Menu frame reference
+                new DisplayAllSKU(Menu.this, logginStaff); // Pass the Menu frame reference
+            }
+        });
+
+        menuButton7.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
             }
         });
 
