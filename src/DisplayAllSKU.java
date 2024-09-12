@@ -41,7 +41,7 @@ public class DisplayAllSKU {
 
     private JFrame parentFrame; // Store the reference to the Menu frame
 
-    public DisplayAllSKU(JFrame parentFrame, Staff logginStaff) {
+    public DisplayAllSKU(JFrame parentFrame, Staff loggedInStaff) {
         this.parentFrame = parentFrame;
         parentFrame.dispose(); // Close the parent (Menu) frame
 
@@ -128,7 +128,7 @@ public class DisplayAllSKU {
                 public void actionPerformed(ActionEvent e) {
                     frame.dispose();
                     // Replace placeholders with actual ID and name retrieval logic
-                    new Menu(logginStaff);
+                    new Menu(loggedInStaff);
                 }
             });
 
