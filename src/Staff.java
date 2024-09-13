@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
+import java.util.Scanner;
 
 public class Staff extends Person {
     private String ID;
@@ -154,6 +155,167 @@ public class Staff extends Person {
         });
 
         frame.setVisible(true);
+    }
+
+    public static void changePassword(Menu menu, Staff loggedInStaff) {
+        Scanner sc = new Scanner(System.in);
+
+        JFrame frame = new JFrame("Staff Change Password");
+        frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(null);
+
+        //header image
+        ImageIcon imageIcon = new ImageIcon("header2.png");
+        Image image = imageIcon.getImage();
+        Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
+        imageIcon = new ImageIcon(scaledImage);
+
+        JLabel imageLabel = new JLabel(imageIcon);
+        imageLabel.setBounds(0, 0, frame.getWidth(), 200);
+        frame.add(imageLabel);
+
+        // Info Panel with editable fields
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new GridLayout(0, 2, 10, 10)); // 2 columns, spacing
+        infoPanel.setBounds(100, 250, 600, 30); // Adjust as needed
+
+        infoPanel.add(new JLabel("Enter the current password:"));
+        JTextField passwordField = new JTextField("");
+        infoPanel.add(passwordField);
+
+        frame.add(infoPanel);
+
+        JButton saveButton = new JButton("Enter");
+        saveButton.setBounds(200, 500, 100, 30);
+        frame.add(saveButton);
+
+        saveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (loggedInStaff.getPassword().equals(passwordField.getText())) {
+                    frame.dispose();
+                    Staff.enterNewPassword(menu, loggedInStaff);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Invalid Password. Try again.");
+                }
+            }
+        });
+
+        JButton backButton = new JButton("Back");
+        backButton.setBounds(500, 500, 100, 30);
+        frame.add(backButton);
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                menu.setVisible(true);
+            }
+        });
+
+        frame.setVisible(true);
+    }
+
+
+    public static void enterNewPassword(Menu menu, Staff loggedInStaff){
+        JFrame frame = new JFrame("Staff Change Password");
+        frame.setSize(800,600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(null);
+
+        //header image
+        ImageIcon imageIcon = new ImageIcon("header2.png");
+        Image image = imageIcon.getImage();
+        Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
+        imageIcon = new ImageIcon(scaledImage);
+
+        JLabel imageLabel = new JLabel(imageIcon);
+        imageLabel.setBounds(0, 0, frame.getWidth(), 200);
+        frame.add(imageLabel);
+
+        // Info Panel with editable fields
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new GridLayout(0, 2, 10, 10)); // 2 columns, spacing
+        infoPanel.setBounds(100, 250, 600, 70); // Adjust as needed
+
+        infoPanel.add(new JLabel("Enter new password:"));
+        JTextField newPwField1 = new JTextField("");
+        infoPanel.add(newPwField1);
+
+        infoPanel.add(new JLabel("Enter new password again:"));
+        JTextField newPwField2 = new JTextField("");
+        infoPanel.add(newPwField2);
+
+        frame.add(infoPanel);
+
+        JButton saveButton = new JButton("Enter");
+        saveButton.setBounds(200, 500, 100, 30);
+        frame.add(saveButton);
+
+        saveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(newPwField1.getText().equals(newPwField2.getText())){
+                    if(!newPwField1.getText().equals(loggedInStaff.getPassword())) {
+                        if (Staff.validatePasswordFormat(newPwField1.getText())) {
+                            loggedInStaff.setPassword(newPwField1.getText());
+                            Staff.updateProfileInFile(loggedInStaff);
+                            JOptionPane.showMessageDialog(frame, "Password changed successfully! Please login again");
+                            frame.dispose();
+                            Staff.loginPage();
+                            return;
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Invalid format. Password must contain at least one upper character, one lower character, one special character, and one digit with no space.");
+                        }
+                    }else{
+                        JOptionPane.showMessageDialog(frame, "New password cannot same with current password");
+                    }
+                }else{
+                    JOptionPane.showMessageDialog(frame, "Please enter the same new password");
+                }
+            }
+        });
+
+        JButton backButton = new JButton("Back");
+        backButton.setBounds(500, 500, 100, 30);
+        frame.add(backButton);
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                menu.setVisible(true);
+            }
+        });
+
+        frame.setVisible(true);
+    }
+
+    private static boolean validatePasswordFormat(String pw){
+        char[] pwArray = pw.toCharArray();
+
+        boolean hasUpperCase = false;
+        boolean hasLowerCase = false;
+        boolean hasDigit = false;
+        boolean hasSpecialChar = false;
+
+        for(char c : pwArray){
+            if(Character.isUpperCase(c)){
+                hasUpperCase = true;
+            }else if(Character.isLowerCase(c)){
+                hasLowerCase = true;
+            }else if(Character.isDigit(c)){
+                hasDigit = true;
+            }else if(!Character.isLetterOrDigit(c)){
+                hasSpecialChar = true;
+            }else if(Character.isWhitespace(c)){
+                return false;
+            }
+        }
+        if (hasUpperCase && hasLowerCase && hasDigit && hasSpecialChar) {
+            return true;
+        }
+
+        return hasUpperCase && hasLowerCase && hasDigit && hasSpecialChar;
     }
 
     public static void profilePage(Menu menu, Staff loggedInStaff) {

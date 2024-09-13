@@ -35,7 +35,7 @@ public class Menu extends JFrame {
         JButton menuButton3 = new JButton("Display all SKU");
         JButton menuButton4 = new JButton("Placeholder 4");
         JButton menuButton5 = new JButton("Placeholder 5");
-        JButton menuButton6 = new JButton("Placeholder 6");
+        JButton menuButton6 = new JButton("Change Password");
         JButton menuButton7 = new JButton("Profile");
         JButton menuButton8 = new JButton("Logout");
 
@@ -56,9 +56,17 @@ public class Menu extends JFrame {
             }
         });
 
+        menuButton6.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                dispose();
+                Staff.changePassword(Menu.this, loggedInStaff);
+            }
+        });
+
         menuButton7.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                dispose();
                 Staff.profilePage(Menu.this, loggedInStaff);
             }
         });
