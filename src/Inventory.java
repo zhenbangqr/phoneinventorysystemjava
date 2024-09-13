@@ -9,12 +9,7 @@ import java.io.IOException;
 
 public class Inventory {
 
-    private static Menu menuInstance;
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> createAndShowGUI(menuInstance));
-    }
-    private static void createAndShowGUI(Menu menuInstance) {
+    public Inventory(Menu menu) {
         JFrame frame = new JFrame("Warehouse Stock");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
@@ -63,7 +58,7 @@ public class Inventory {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                menuInstance.setVisible(true);
+                menu.setVisible(true);
             }
         });
 

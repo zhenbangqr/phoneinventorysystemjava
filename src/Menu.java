@@ -48,6 +48,14 @@ public class Menu extends JFrame {
         buttonPanel.add(menuButton7);
         buttonPanel.add(menuButton8);
 
+        menuButton1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Close the current Menu frame
+                new Inventory(Menu.this);
+            }
+        });
+
         menuButton3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
