@@ -6,8 +6,12 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Inventory {
+    private String productSKU;
+    private int productSKUQuantity;
 
     public Inventory(Menu menu) {
         JFrame frame = new JFrame("Warehouse Stock");
@@ -39,13 +43,27 @@ public class Inventory {
         model.addColumn("Type");
         model.addColumn("Amount");
 
+        Map<String, String[]> productDetails = new HashMap<>();
+
+        productDetails = mapProductDetails();
+
+        try(BufferedReader br = new BufferedReader(new FileReader("Xiaomi.txt"))){
+            String line = br.readLine();
+        }catch(IOException e){
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(frame, "Error reading warehouse stock data.");
+        }
+
         // Read and populate table data
         try (BufferedReader br = new BufferedReader(new FileReader("warehousestock.txt"))) {
             String line = br.readLine(); // Skip header line
 
             while ((line = br.readLine()) != null) {
                 String[] data = line.split("\\|");
-                model.addRow(data);
+                String[] productInfo = productDetails.get(data[0]);
+                if(productInfo != null) {
+                    model.addRow(new Object[]{data[0], productInfo[1], productInfo[2], productInfo[3], productInfo[4],productInfo[5], productInfo[6], data[1]});
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -67,5 +85,26 @@ public class Inventory {
         frame.add(buttonPanel, BorderLayout.SOUTH);
 
         frame.setVisible(true);
+    }
+
+    private Map<String, String[]> mapProductDetails(){
+        Map<String, String[]> phoneDetails = new HashMap<>();
+        String[] productsFileName = {"POCO.txt", "Apple.txt", "Xiaomi.txt"};
+
+        for(String fileName : productsFileName){
+            try (BufferedReader br = new BufferedReader(new FileReader(fileName))){
+                String line = br.readLine();//skip the header line
+
+                while((line = br.readLine()) != null){
+                    String[] details = line.split("\\|");
+                    phoneDetails.put(details[0], details);
+                }
+            } catch(IOException e){
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Phone file not founded");
+            }
+        }
+
+        return phoneDetails;
     }
 }
