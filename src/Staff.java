@@ -17,7 +17,7 @@ import java.util.Scanner;
 public class Staff extends Person {
     private String ID;
     private String password;
-    private String site;
+    private String siteID;
     private JButton warehouseButton;
     private JButton storeButton;
 
@@ -25,11 +25,11 @@ public class Staff extends Person {
 
     }
 
-    public Staff(String ID, String password, String site, String name, String email, String birthDay, String phoneNum) {
+    public Staff(String ID, String password, String siteID, String name, String email, String birthDay, String phoneNum) {
         super(name, email, birthDay, phoneNum);
         this.ID = ID;
         this.password = password;
-        this.site = site;
+        this.siteID = siteID;
     }
 
     public static void updateProfileInFile(Staff loggedInStaff) {
@@ -44,7 +44,7 @@ public class Staff extends Person {
                 // If this is the line for the staff with the matching ID, update the information
                 if (data[1].equals(loggedInStaff.getID())) {
                     // Construct new data for this staff
-                    line = String.join(",", data[0], loggedInStaff.getID(), loggedInStaff.getPassword(), loggedInStaff.getSite(), loggedInStaff.getName(), loggedInStaff.getEmail(), loggedInStaff.getBirthDay(), loggedInStaff.getPhoneNum());
+                    line = String.join(",", data[0], loggedInStaff.getID(), loggedInStaff.getPassword(), loggedInStaff.getSiteID(), loggedInStaff.getName(), loggedInStaff.getEmail(), loggedInStaff.getBirthDay(), loggedInStaff.getPhoneNum());
                 }
                 fileContent.append(line).append("\n");
             }
@@ -59,7 +59,6 @@ public class Staff extends Person {
             System.err.println("Error writing updated staff data: " + ex.getMessage());
         }
     }
-
 
     public void checkBirthday() {
 
@@ -132,7 +131,12 @@ public class Staff extends Person {
                             frame.dispose(); // Close the login window
                             Staff loggedInStaff = new Staff(data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
                             loggedInStaff.checkBirthday(); // Check for birthday after successful login
-                            new Menu(loggedInStaff); // Open the menu window
+                            char[] siteIDArray = data[3].toCharArray();
+                            if(siteIDArray[0] == 'W') { // go to warehouse menu if siteID is start with W
+                                new Menu(loggedInStaff); // Open the menu window
+                            }else{ // else go to store menu
+                                new Menu(loggedInStaff);
+                            }
                             return;
                         }
                     }
@@ -215,7 +219,6 @@ public class Staff extends Person {
 
         frame.setVisible(true);
     }
-
 
     public static void enterNewPassword(Menu menu, Staff loggedInStaff){
         JFrame frame = new JFrame("Staff Change Password");
@@ -361,8 +364,8 @@ public class Staff extends Person {
         JTextField phoneField = new JTextField(loggedInStaff.getPhoneNum());
         infoPanel.add(phoneField);
 
-        infoPanel.add(new JLabel("Site:"));
-        JTextField siteField = new JTextField(loggedInStaff.getSite());
+        infoPanel.add(new JLabel("Site ID:"));
+        JTextField siteField = new JTextField(loggedInStaff.getSiteID());
         siteField.setEditable(false); // Site shouldn't be edited
         infoPanel.add(siteField);
 
@@ -466,11 +469,11 @@ public class Staff extends Person {
         this.password = password;
     }
 
-    public String getSite(){
-        return site;
+    public String getSiteID() {
+        return siteID;
     }
 
-    public void setSite(String site){
-        this.site = site;
+    public void setSiteID(String siteID) {
+        this.siteID = siteID;
     }
 }
