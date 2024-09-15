@@ -39,13 +39,23 @@ public class PurchaseOrder {
         frame.setSize(800, 600);
         frame.setLayout(new BorderLayout());
 
-        // Header Image (replace with your actual image path)
         ImageIcon imageIcon = new ImageIcon("header2.png");
         Image image = imageIcon.getImage();
-        Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH); // Adjust height as needed
+        Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
         imageIcon = new ImageIcon(scaledImage);
         JLabel imageLabel = new JLabel(imageIcon);
-        frame.add(imageLabel, BorderLayout.NORTH);
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(imageLabel, BorderLayout.NORTH); // Image at the top of topPanel
+
+        // Create the header panel
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JLabel headerLabel = new JLabel("Order history for " + siteID);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        headerPanel.add(headerLabel);
+        topPanel.add(headerPanel, BorderLayout.SOUTH); // Header below the image in topPanel
+
+        // Add the combined topPanel to the frame's NORTH
+        frame.add(topPanel, BorderLayout.NORTH);
 
         // Table to display stock data
         DefaultTableModel model = new DefaultTableModel();

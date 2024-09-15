@@ -10,11 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Inventory {
-    private String productSKU;
-    private int productSKUQuantity;
-    private JFrame frame;
 
-    Inventory[] inventory = new Inventory[100];
+    private JFrame frame;
 
     public Inventory(Menu menu, String siteID) {
         if(siteID.charAt(0) == 'W') {
@@ -26,12 +23,26 @@ public class Inventory {
         frame.setSize(800, 600);
         frame.setLayout(new BorderLayout());
         // Header Image (replace with your actual image path)
+        // Panel to hold both image and header
+        JPanel topPanel = new JPanel(new BorderLayout());
+
+        // Header Image
         ImageIcon imageIcon = new ImageIcon("header2.png");
         Image image = imageIcon.getImage();
-        Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH); // Adjust height as needed
+        Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
         imageIcon = new ImageIcon(scaledImage);
         JLabel imageLabel = new JLabel(imageIcon);
-        frame.add(imageLabel, BorderLayout.NORTH);
+        topPanel.add(imageLabel, BorderLayout.NORTH); // Image at the top of topPanel
+
+        // Create the header panel
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JLabel headerLabel = new JLabel("Stock list for " + siteID);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        headerPanel.add(headerLabel);
+        topPanel.add(headerPanel, BorderLayout.SOUTH); // Header below the image in topPanel
+
+        // Add the combined topPanel to the frame's NORTH
+        frame.add(topPanel, BorderLayout.NORTH);
 
         // Table to display stock data
         DefaultTableModel model = new DefaultTableModel();
