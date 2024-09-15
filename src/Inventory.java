@@ -12,13 +12,19 @@ import java.util.Map;
 public class Inventory {
     private String productSKU;
     private int productSKUQuantity;
+    private JFrame frame;
+
+    Inventory[] inventory = new Inventory[100];
 
     public Inventory(Menu menu, String siteID) {
-        JFrame frame = new JFrame("Warehouse Stock");
+        if(siteID.charAt(0) == 'W') {
+            frame = new JFrame("Warehouse Stock");
+        }else{
+            frame = new JFrame("Store Stock");
+        }
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setLayout(new BorderLayout());
-
         // Header Image (replace with your actual image path)
         ImageIcon imageIcon = new ImageIcon("header2.png");
         Image image = imageIcon.getImage();
@@ -43,9 +49,7 @@ public class Inventory {
         model.addColumn("Type");
         model.addColumn("Amount");
 
-        Map<String, String[]> productDetails = new HashMap<>();
-
-        productDetails = mapProductDetails();
+        Map<String, String[]> productDetails = Inventory.mapProductDetails();
 
         String siteFileName = siteID + ".txt";
         // Read and populate table data
@@ -81,7 +85,7 @@ public class Inventory {
         frame.setVisible(true);
     }
 
-    private Map<String, String[]> mapProductDetails(){
+    public static Map<String, String[]> mapProductDetails(){
         Map<String, String[]> phoneDetails = new HashMap<>();
         String[] productsFileName = {"POCO.txt", "Apple.txt", "Xiaomi.txt"};
 

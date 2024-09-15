@@ -35,7 +35,7 @@ public class Menu extends JFrame {
         JButton menuButton3 = new JButton("Display all SKU");
         JButton menuButton4 = new JButton("Placeholder 4");
         JButton menuButton5 = new JButton("Placeholder 5");
-        JButton menuButton6 = new JButton("Change Password");
+        JButton menuButton6 = new JButton("Order History");
         JButton menuButton7 = new JButton("Profile");
         JButton menuButton8 = new JButton("Logout");
 
@@ -61,6 +61,14 @@ public class Menu extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
                 new DisplayAllSKU(Menu.this, loggedInStaff); // Pass the Menu frame reference
+            }
+        });
+
+        menuButton6.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                PurchaseOrder.displayOrderHistory(Menu.this, loggedInStaff.getSiteID());
             }
         });
 
