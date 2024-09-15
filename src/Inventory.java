@@ -22,8 +22,7 @@ public class Inventory {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setLayout(new BorderLayout());
-        // Header Image (replace with your actual image path)
-        // Panel to hold both image and header
+
         JPanel topPanel = new JPanel(new BorderLayout());
 
         // Header Image
