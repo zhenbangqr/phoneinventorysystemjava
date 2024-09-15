@@ -38,11 +38,14 @@ public class DisplayAllSKU {
     private static Map<String, String> manufacturerFiles = new HashMap<>();
     private static JComboBox<String> typeFilterComboBox;
 
-    private JFrame parentFrame; // Store the reference to the Menu frame
+    private JFrame parentFrame;
+
+    private static JMenu manufacturerMenu;
+    private static String currentManufacturer = "Apple";
 
     public DisplayAllSKU(JFrame parentFrame, Staff loggedInStaff) {
         this.parentFrame = parentFrame;
-        parentFrame.dispose(); // Close the parent (Menu) frame
+        parentFrame.dispose();
 
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Product Viewer");
@@ -64,9 +67,8 @@ public class DisplayAllSKU {
             JScrollPane scrollPane = new JScrollPane(table);
             frame.add(scrollPane, BorderLayout.CENTER);
 
-            // Create menu bar and menu
             JMenuBar menuBar = new JMenuBar();
-            JMenu manufacturerMenu = new JMenu("Manufacturer ↓");
+            manufacturerMenu = new JMenu(currentManufacturer + " ↓");
             menuBar.add(manufacturerMenu);
 
             // Add manufacturer options to menu (replace with your actual file names)
@@ -75,16 +77,15 @@ public class DisplayAllSKU {
             addManufacturerMenuItem(manufacturerMenu, "POCO", "POCO.txt");
             addManufacturerMenuItem(manufacturerMenu, "Nothing", "nothing.txt");
             addManufacturerMenuItem(manufacturerMenu, "Xiaomi", "Xiaomi.txt");
-            // Add more manufacturers as needed
 
             // Create type filter JComboBox
             typeFilterComboBox = new JComboBox<>();
-            typeFilterComboBox.addItem("All"); // Default option to show all types
+            typeFilterComboBox.addItem("All");
 
             frame.setJMenuBar(menuBar);
             frame.setVisible(true);
 
-            // Load initial data (you can choose a default manufacturer here)
+            // Load initial data
             loadProductsFromFile("Apple.txt");
 
             // Get unique types from productList after initial load
@@ -106,7 +107,6 @@ public class DisplayAllSKU {
             filterPanel.add(new JLabel("Filter by Type:"));
             filterPanel.add(typeFilterComboBox);
 
-            // Search field
             JTextField searchField = new JTextField(20);
             searchField.addKeyListener(new KeyAdapter() {
                 @Override
@@ -124,7 +124,8 @@ public class DisplayAllSKU {
             JButton backButton = new JButton("Back to Menu");
             backButton.addActionListener(new ActionListener() {
                 @Override
-                public void actionPerformed(ActionEvent e) {
+                public void actionPerformed(ActionEvent e)
+                {
                     frame.dispose();
                     // Replace placeholders with actual ID and name retrieval logic
                     new Menu(loggedInStaff);
@@ -143,11 +144,12 @@ public class DisplayAllSKU {
             @Override
             public void actionPerformed(ActionEvent e) {
                 loadProductsFromFile(fileName);
+                currentManufacturer = manufacturerName;
+                manufacturerMenu.setText(currentManufacturer + " ↓");
 
                 // Update typeFilterComboBox with new types
                 Set<String> uniqueTypes = getUniqueTypes(readProductsFromFile(fileName));
 
-                // **Remove the listener temporarily**
                 ActionListener[] listeners = typeFilterComboBox.getActionListeners();
                 for (ActionListener listener : listeners) {
                     typeFilterComboBox.removeActionListener(listener);
@@ -159,21 +161,19 @@ public class DisplayAllSKU {
                     typeFilterComboBox.addItem(type);
                 }
 
-                // Set the selected item to "All" after updating the items
                 typeFilterComboBox.setSelectedItem("All");
 
-                // **Add the listener back**
                 for (ActionListener listener : listeners) {
                     typeFilterComboBox.addActionListener(listener);
                 }
 
-                // Now you can safely filter
                 filterTableByType("All");
             }
         });
         menu.add(menuItem);
         manufacturerFiles.put(manufacturerName, fileName);
     }
+
 
     private static void loadProductsFromFile(String fileName) {
         tableModel.setRowCount(0); // Clear existing data
