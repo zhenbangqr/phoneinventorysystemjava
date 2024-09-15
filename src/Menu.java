@@ -52,7 +52,7 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
-                new Inventory(Menu.this);
+                new Inventory(Menu.this, loggedInStaff.getSiteID());
             }
         });
 
