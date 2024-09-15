@@ -1,0 +1,4 @@
+orderID|siteID|SKU|Qty|Status|Date
+O001|W001|P001|20|Approved|20/8/2024
+O001|W001|P002|20|Pending|21/8/2024
+O001|W001|P003|20|Approved|22/8/2024
