@@ -13,7 +13,7 @@ public class Inventory {
     private String productSKU;
     private int productSKUQuantity;
 
-    public Inventory(Menu menu) {
+    public Inventory(Menu menu, String siteID) {
         JFrame frame = new JFrame("Warehouse Stock");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
@@ -47,15 +47,9 @@ public class Inventory {
 
         productDetails = mapProductDetails();
 
-        try(BufferedReader br = new BufferedReader(new FileReader("Xiaomi.txt"))){
-            String line = br.readLine();
-        }catch(IOException e){
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(frame, "Error reading warehouse stock data.");
-        }
-
+        String siteFileName = siteID + ".txt";
         // Read and populate table data
-        try (BufferedReader br = new BufferedReader(new FileReader("warehousestock.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(siteFileName))) {
             String line = br.readLine(); // Skip header line
 
             while ((line = br.readLine()) != null) {
