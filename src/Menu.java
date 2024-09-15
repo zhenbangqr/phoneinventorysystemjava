@@ -64,13 +64,6 @@ public class Menu extends JFrame {
             }
         });
 
-        menuButton6.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                dispose();
-                Staff.changePassword(Menu.this, loggedInStaff);
-            }
-        });
-
         menuButton7.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

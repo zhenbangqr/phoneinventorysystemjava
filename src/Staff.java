@@ -213,7 +213,7 @@ public class Staff extends Person {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                menu.setVisible(true);
+                Staff.profilePage(menu, loggedInStaff);
             }
         });
 
@@ -286,7 +286,7 @@ public class Staff extends Person {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                menu.setVisible(true);
+                Staff.profilePage(menu, loggedInStaff);
             }
         });
 
@@ -375,6 +375,18 @@ public class Staff extends Person {
         JButton saveButton = new JButton("Save");
         saveButton.setBounds(200, 500, 100, 30);
         frame.add(saveButton);
+
+        JButton editPWButton = new JButton("Change Password");
+        editPWButton.setBounds(320, 500, 150, 30);
+        frame.add(editPWButton);
+
+        editPWButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                Staff.changePassword(menu, loggedInStaff);
+            }
+        });
 
         // Add action listener to Save button
         saveButton.addActionListener(new ActionListener() {
