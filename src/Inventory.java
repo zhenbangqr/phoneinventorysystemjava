@@ -97,7 +97,7 @@ public class Inventory {
 
     public static Map<String, String[]> mapProductDetails(){
         Map<String, String[]> phoneDetails = new HashMap<>();
-        String[] productsFileName = {"POCO.txt", "Apple.txt", "Xiaomi.txt"};
+        String[] productsFileName = {"POCO.txt", "Apple.txt", "Xiaomi.txt", "Samsung.txt", "Nothing.txt"};
 
         for(String fileName : productsFileName){
             try (BufferedReader br = new BufferedReader(new FileReader(fileName))){

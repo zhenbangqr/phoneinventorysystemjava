@@ -75,7 +75,7 @@ public class DisplayAllSKU {
             addManufacturerMenuItem(manufacturerMenu, "Apple", "Apple.txt");
             addManufacturerMenuItem(manufacturerMenu, "Samsung", "Samsung.txt");
             addManufacturerMenuItem(manufacturerMenu, "POCO", "POCO.txt");
-            addManufacturerMenuItem(manufacturerMenu, "Nothing", "nothing.txt");
+            addManufacturerMenuItem(manufacturerMenu, "Nothing", "Nothing.txt");
             addManufacturerMenuItem(manufacturerMenu, "Xiaomi", "Xiaomi.txt");
 
             // Create type filter JComboBox

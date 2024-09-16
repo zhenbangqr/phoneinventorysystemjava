@@ -238,8 +238,8 @@ public class Staff extends Person {
 
         // Info Panel with editable fields
         JPanel infoPanel = new JPanel();
-        infoPanel.setLayout(new GridLayout(0, 2, 10, 10)); // 2 columns, spacing
-        infoPanel.setBounds(100, 250, 600, 70); // Adjust as needed
+        infoPanel.setLayout(new GridLayout(0, 2, 10, 10));
+        infoPanel.setBounds(100, 250, 600, 70);
 
         infoPanel.add(new JLabel("Enter new password:"));
         JTextField newPwField1 = new JTextField("");
