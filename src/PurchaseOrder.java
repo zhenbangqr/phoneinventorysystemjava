@@ -1,5 +1,8 @@
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,15 +35,16 @@ public class PurchaseOrder {
     }
 
 
-    public static PurchaseOrder[] displayOrderHistory(Menu menu, String siteID){
+    public static void displayOrderHistory(Menu menu, String siteID) {
         JFrame frame = new JFrame("Purchase Order History");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setLayout(new BorderLayout());
 
+        // Header Image (replace with your actual image path)
         ImageIcon imageIcon = new ImageIcon("header2.png");
         Image image = imageIcon.getImage();
-        Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
+        Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH); // Adjust height as needed
         imageIcon = new ImageIcon(scaledImage);
         JLabel imageLabel = new JLabel(imageIcon);
         JPanel topPanel = new JPanel(new BorderLayout());
@@ -56,14 +60,141 @@ public class PurchaseOrder {
         // Add the combined topPanel to the frame's NORTH
         frame.add(topPanel, BorderLayout.NORTH);
 
+        // Table setup
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                return columnIndex == 0 ? Boolean.class : String.class;
+            }
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 0;
+            }
+        };
+
+        JTable table = new JTable(model);
+        JScrollPane scrollPane = new JScrollPane(table);
+        frame.add(scrollPane, BorderLayout.CENTER);
+
+        // Column headers
+        model.addColumn("Select");
+        model.addColumn("Order ID");
+        model.addColumn("Supplier ID");
+        model.addColumn("Status");
+        model.addColumn("Order Date");
+
+        // Read from file and populate table
+        try (BufferedReader br = new BufferedReader(new FileReader("orderRequest.txt"))) {
+            String line = br.readLine(); // skip header line
+
+            while ((line = br.readLine()) != null) {
+                String[] orderData = line.split("\\|");
+
+                if (orderData[1].equals(siteID)) {
+                    model.addRow(new Object[]{
+                            false, // Selection (radio button)
+                            orderData[0], // Order ID
+                            orderData[2], // Supplier ID
+                            orderData[3], // Order Status
+                            orderData[4]  // Order Date
+                    });
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Radio button selection listener
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) {
+                    // Update all radio buttons in the first column to false except the selected row
+                    for (int i = 0; i < model.getRowCount(); i++) {
+                        if (i != selectedRow) {
+                            model.setValueAt(false, i, 0);
+                        }
+                    }
+                }
+            }
+        });
+
+        // Buttons panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+        // View Details Button
+        JButton viewDetailsButton = new JButton("View Order Details");
+        buttonPanel.add(viewDetailsButton);
+
+        viewDetailsButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) {
+                    String selectedOrderID = model.getValueAt(selectedRow, 1).toString();
+                    frame.dispose();
+                    showOrderDetails(menu, siteID, selectedOrderID);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Please select an order to view details.", "No Order Selected", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+
+        // Back Button
+        JButton backButton = new JButton("Back");
+        buttonPanel.add(backButton);
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                menu.setVisible(true);
+            }
+        });
+
+        // Add buttons panel to the frame's SOUTH
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+
+        frame.setVisible(true);
+    }
+
+    public static void showOrderDetails(Menu menu, String siteID, String orderID) {
+        JFrame frame = new JFrame("Purchase Order History");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setLayout(new BorderLayout());
+
+        ImageIcon imageIcon = new ImageIcon("header2.png");
+        Image image = imageIcon.getImage();
+        Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
+        imageIcon = new ImageIcon(scaledImage);
+        JLabel imageLabel = new JLabel(imageIcon);
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(imageLabel, BorderLayout.NORTH); // Image at the top of topPanel
+
+        // Create the header panel
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JLabel headerLabel = new JLabel("Order details for " + orderID);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        headerPanel.add(headerLabel);
+        topPanel.add(headerPanel, BorderLayout.SOUTH); // Header below the image in topPanel
+
+        // Add the combined topPanel to the frame's NORTH
+        frame.add(topPanel, BorderLayout.NORTH);
+
         // Table to display stock data
-        DefaultTableModel model = new DefaultTableModel();
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         JTable table = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(table);
         frame.add(scrollPane, BorderLayout.CENTER);
 
         // Add columns to the table model
-        model.addColumn("Order ID");
+        model.addColumn("No.");
         model.addColumn("SKU");
         model.addColumn("Model");
         model.addColumn("RAM");
@@ -72,33 +203,20 @@ public class PurchaseOrder {
         model.addColumn("Price");
         model.addColumn("Type");
         model.addColumn("Quantity");
-        model.addColumn("Status");
-        model.addColumn("Order Date");
 
         Map<String, String[]> productDetails = Inventory.mapProductDetails();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
 
-        try(BufferedReader br = new BufferedReader(new FileReader("orderRequest.txt"))){
+        try(BufferedReader br = new BufferedReader(new FileReader("orderDetails.txt"))){
             String line = br.readLine(); //Skip the header line
-
-            while((line = br.readLine()) != null){
-                String[] orderData = line.split("\\|");
-
-                if(orderData[1].equals(siteID)){
-                    String[] productInfo = productDetails.get(orderData[2]);
-
-                    if(productInfo != null) {
-
-                        Date orderDate = null;
-                        try {
-                            orderDate = dateFormat.parse(orderData[5]);  // Parse string into Date
-                        } catch (ParseException e) {
-                            System.err.println("Failed to parse date: " + orderData[5]);
-                            e.printStackTrace();
-                        }
-
+            int numOfProduct = 0;
+            while((line = br.readLine()) != null) {
+                String[] orderDetails = line.split("\\|");
+                if (orderDetails[0].equals(orderID)) {
+                    String[] productInfo = productDetails.get(orderDetails[1]);
+                    numOfProduct++;
+                    if (productInfo != null) {
                         model.addRow(new Object[]{
-                                orderData[0], //Order ID
+                                numOfProduct, //product number
                                 productInfo[0], //SKU
                                 productInfo[1], //Model
                                 productInfo[2], //RAM
@@ -106,12 +224,8 @@ public class PurchaseOrder {
                                 productInfo[4], //Color
                                 productInfo[5], //Price
                                 productInfo[6], //Type
-                                orderData[3], //Order Qty
-                                orderData[4], //Order Status
-                                orderData[5]  //Order Date
+                                orderDetails[2], //Order Qty
                         });
-
-                        orders[i++] = new PurchaseOrder(orderData[0], orderData[1], orderData[2], Integer.parseInt(orderData[3]), orderData[4], orderDate);
                     }
                 }
             }
@@ -121,12 +235,9 @@ public class PurchaseOrder {
 
         // Back button
         JButton backButton = new JButton("Back");
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-                menu.setVisible(true);
-            }
+        backButton.addActionListener(e -> {
+            frame.dispose();
+            PurchaseOrder.displayOrderHistory(menu, siteID);
         });
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -134,8 +245,6 @@ public class PurchaseOrder {
         frame.add(buttonPanel, BorderLayout.SOUTH);
 
         frame.setVisible(true);
-
-        return java.util.Arrays.copyOf(orders, i); //return only the filled part of the array
     }
 
 
