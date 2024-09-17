@@ -55,6 +55,14 @@ public class Menu extends JFrame {
             }
         });
 
+        menuButton2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Close the current Menu frame
+                new StockRequest(Menu.this, loggedInStaff.getSiteID());
+            }
+        });
+
         menuButton3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
