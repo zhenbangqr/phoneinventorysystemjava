@@ -395,18 +395,40 @@ public class PurchaseOrder {
             });
         }
 
-        // Back button
-        JButton backButton = new JButton("Back");
-        backButton.addActionListener(e -> {
-            frame.dispose();
-            makeOrder(menu, loggedInStaff);
+        // Buttons panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+        // View Details Button
+        JButton continueOrderButton = new JButton("Continue Order");
+        buttonPanel.add(continueOrderButton);
+
+        continueOrderButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) {
+                    String selectedOrderID = model.getValueAt(selectedRow, 1).toString();
+                    frame.dispose();
+                    ////////////////////////////////
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Please select an order to view details.", "No Order Selected", JOptionPane.WARNING_MESSAGE);
+                }
+            }
         });
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        // Back Button
+        JButton backButton = new JButton("Back");
         buttonPanel.add(backButton);
-        frame.add(buttonPanel, BorderLayout.SOUTH);
 
-        frame.setVisible(true);
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                makeOrder(menu, loggedInStaff);
+            }
+        });
+
+        // Add buttons panel to the frame's SOUTH
+        frame.add(buttonPanel, BorderLayout.SOUTH);
     }
 
     public String getOrderID() {
