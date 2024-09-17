@@ -33,7 +33,7 @@ public class Staff extends Person {
     }
 
     public static void updateProfileInFile(Staff loggedInStaff) {
-        String filePath = "Person.txt";
+        String filePath = "aux_files/person_txt/Person.txt";
         StringBuilder fileContent = new StringBuilder();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -85,7 +85,7 @@ public class Staff extends Person {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
 
-        ImageIcon imageIcon = new ImageIcon("header2.png");
+        ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
         Image image = imageIcon.getImage();
         Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
         imageIcon = new ImageIcon(scaledImage);
@@ -122,7 +122,7 @@ public class Staff extends Person {
                 String enteredPassword = new String(passwordField.getPassword());
 
                 try {
-                    BufferedReader reader = new BufferedReader(new FileReader("Person.txt"));
+                    BufferedReader reader = new BufferedReader(new FileReader("aux_files/person_txt/Person.txt"));
                     String line;
                     while ((line = reader.readLine()) != null) {
                         String[] data = line.split(",");
@@ -170,7 +170,7 @@ public class Staff extends Person {
         frame.setLayout(null);
 
         //header image
-        ImageIcon imageIcon = new ImageIcon("header2.png");
+        ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
         Image image = imageIcon.getImage();
         Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
         imageIcon = new ImageIcon(scaledImage);
@@ -227,7 +227,7 @@ public class Staff extends Person {
         frame.setLayout(null);
 
         //header image
-        ImageIcon imageIcon = new ImageIcon("header2.png");
+        ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
         Image image = imageIcon.getImage();
         Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
         imageIcon = new ImageIcon(scaledImage);
@@ -328,7 +328,7 @@ public class Staff extends Person {
         frame.setLayout(null);
 
         // Header image
-        ImageIcon imageIcon = new ImageIcon("header2.png");
+        ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
         Image image = imageIcon.getImage();
         Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
         imageIcon = new ImageIcon(scaledImage);

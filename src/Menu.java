@@ -11,7 +11,7 @@ public class Menu extends JFrame {
         setLayout(new BorderLayout());
 
         // Banner
-        ImageIcon imageIcon = new ImageIcon("warehouseheader.png");
+        ImageIcon imageIcon = new ImageIcon("aux_files/images/warehouseheader.png");
         Image image = imageIcon.getImage();
         Image scaledImage = image.getScaledInstance(getWidth(), 200, Image.SCALE_SMOOTH);
         imageIcon = new ImageIcon(scaledImage);
