@@ -8,9 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -404,13 +402,22 @@ public class PurchaseOrder {
 
         continueOrderButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int selectedRow = table.getSelectedRow();
-                if (selectedRow != -1) {
-                    String selectedOrderID = model.getValueAt(selectedRow, 1).toString();
-                    frame.dispose();
-                    ////////////////////////////////
+                ArrayList<String> selectedSKUs = new ArrayList<>();
+
+                // Loop through all rows and check if they are selected
+                for (int i = 0; i < table.getRowCount(); i++) {
+                    Boolean isSelected = (Boolean) model.getValueAt(i, 0); // Check the checkbox column
+                    if (isSelected != null && isSelected) {
+                        String selectedSKU = model.getValueAt(i, 1).toString(); // Get the SKU of the selected row
+                        selectedSKUs.add(selectedSKU); // Add the SKU to the list
+                    }
+                }
+
+                if (!selectedSKUs.isEmpty()) {
+                    frame.dispose(); // Close the current window
+                    enterQuantityForSelectedStocks(menu, loggedInStaff, brand, selectedSKUs); // Pass the list of SKUs to the next method
                 } else {
-                    JOptionPane.showMessageDialog(frame, "Please select an order to view details.", "No Order Selected", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Please select at least one stock to continue.", "No Stock Selected", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
@@ -431,6 +438,181 @@ public class PurchaseOrder {
         frame.add(buttonPanel, BorderLayout.SOUTH);
 
         frame.setVisible(true);
+    }
+
+    public static void enterQuantityForSelectedStocks(Menu menu, Staff loggedInStaff, String brand, ArrayList<String> selectedSKUs){
+        JFrame frame = new JFrame("Enter Stock Order Quantity");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setLayout(new BorderLayout());
+
+        ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
+        Image image = imageIcon.getImage();
+        Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
+        imageIcon = new ImageIcon(scaledImage);
+        JLabel imageLabel = new JLabel(imageIcon);
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(imageLabel, BorderLayout.NORTH); // Image at the top of topPanel
+
+        // Create the header panel
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JLabel headerLabel = new JLabel("Enter Quantity for selected stock");
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        headerPanel.add(headerLabel);
+        topPanel.add(headerPanel, BorderLayout.SOUTH); // Header below the image in topPanel
+
+        // Add the combined topPanel to the frame's NORTH
+        frame.add(topPanel, BorderLayout.NORTH);
+
+        // Table setup
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                return columnIndex == 8 ? Integer.class : String.class;
+            }
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 8;
+            }
+        };
+
+        JTable table = new JTable(model);
+        JScrollPane scrollPane = new JScrollPane(table);
+        frame.add(scrollPane, BorderLayout.CENTER);
+
+        // Add columns to the table model
+        model.addColumn("No.");
+        model.addColumn("SKU");
+        model.addColumn("Model");
+        model.addColumn("RAM");
+        model.addColumn("ROM");
+        model.addColumn("Color");
+        model.addColumn("Price");
+        model.addColumn("Type");
+        model.addColumn("Quantity");
+
+        Map<String, String[]> productDetails = Inventory.mapProductDetails();
+
+        int rowCount = 1;
+        for (String sku : selectedSKUs) {
+            String[] productInfo = productDetails.get(sku);
+            if (productInfo != null) {
+                model.addRow(new Object[]{
+                        rowCount++,
+                        productInfo[0], //SKU
+                        productInfo[1], //Model
+                        productInfo[2], //RAM
+                        productInfo[3], //ROM
+                        productInfo[4], //Color
+                        productInfo[5], //Price
+                        productInfo[6], //Type
+                        0 // Default Quantity is 0, user will enter the value
+                });
+            }
+        }
+
+        // Buttons panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+        // View Details Button
+        JButton confirmOrderButton = new JButton("Confirm Order");
+        buttonPanel.add(confirmOrderButton);
+
+        confirmOrderButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                boolean allQuantitiesValid = true;
+                HashMap<String, Integer> orderQuantities = new HashMap<>();
+
+                // Loop through all rows and validate the entered quantities
+                for (int i = 0; i < table.getRowCount(); i++) {
+                    String sku = model.getValueAt(i, 1).toString();
+                    int quantity = (int) model.getValueAt(i, 8); // Get the quantity from the last column
+
+                    if (quantity > 0) {
+                        orderQuantities.put(sku, quantity); // Add valid quantity to the map
+                    } else {
+                        allQuantitiesValid = false;
+                        JOptionPane.showMessageDialog(frame, "Please enter a valid quantity for SKU: " + sku, "Invalid Quantity", JOptionPane.WARNING_MESSAGE);
+                        break;
+                    }
+                }
+
+                if (allQuantitiesValid) {
+                    String newOrderID = getNextOrderID("aux_files/order_txt/orderDetails.txt");
+
+                    addOrderToFile("aux_files/order_txt/orderDetails.txt", newOrderID, orderQuantities);
+
+
+
+                    JOptionPane.showMessageDialog(frame, "Order placed successfully!");
+                    frame.dispose(); // Close the window after successful order
+                    // Process the order (e.g., save to file, update database, etc.)
+                }
+            }
+        });
+
+        // Back Button
+        JButton backButton = new JButton("Back");
+        buttonPanel.add(backButton);
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                displayProductForOrder(menu, loggedInStaff, brand);
+            }
+        });
+
+        // Add buttons panel to the frame's SOUTH
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+
+        frame.setVisible(true);
+    }
+
+    public static String getNextOrderID(String fileName) {
+        String lastOrderID = "";
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String currentLine;
+
+            // Loop through the file to find the last line
+            while ((currentLine = reader.readLine()) != null) {
+                if (!currentLine.trim().isEmpty()) {
+                    lastOrderID = currentLine.split("\\|")[0]; // Get OrderID from the first column
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // If file is empty or no valid OrderID is found, return the first OrderID
+        if (lastOrderID.isEmpty()) {
+            return "O001";
+        }
+
+        // Extract the numeric part of the OrderID and increment it
+        String orderNumberPart = lastOrderID.substring(1); // Get the numeric part (e.g., '001')
+        int orderNumber = Integer.parseInt(orderNumberPart);
+        orderNumber++; // Increment the numeric part
+
+        // Format the new OrderID by keeping the 'O' prefix and ensuring it's three digits
+        return String.format("O%03d", orderNumber);
+    }
+
+    public static void addOrderToFile(String fileName, String orderID, HashMap<String, Integer> orderQuantities) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) { // true to append to file
+            for (Map.Entry<String, Integer> entry : orderQuantities.entrySet()) {
+                String sku = entry.getKey();
+                int quantity = entry.getValue();
+
+                // Write the order details in the format: OrderID|SKU|Qty
+                writer.write(orderID + "|" + sku + "|" + quantity);
+                writer.newLine(); // Add a new line after each entry
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getOrderID() {
