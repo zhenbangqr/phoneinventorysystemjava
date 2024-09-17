@@ -53,7 +53,7 @@ public class Supplier extends Person {
             String line;
 
             while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
+                String[] data = line.split("\\|");
                 if (data[0].equals("Supplier")) {
                     Supplier supplier = new Supplier(data[2], data[3], data[4], data[5], data[1], data[6], data[7]);
                     supplierMap.put(supplier.getID(), supplier);

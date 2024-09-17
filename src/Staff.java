@@ -18,6 +18,7 @@ public class Staff extends Person {
     private String ID;
     private String password;
     private String siteID;
+
     private JButton warehouseButton;
     private JButton storeButton;
 
@@ -40,11 +41,11 @@ public class Staff extends Person {
             String line;
 
             while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
+                String[] data = line.split("\\|");
                 // If this is the line for the staff with the matching ID, update the information
                 if (data[1].equals(loggedInStaff.getID())) {
                     // Construct new data for this staff
-                    line = String.join(",", data[0], loggedInStaff.getID(), loggedInStaff.getPassword(), loggedInStaff.getSiteID(), loggedInStaff.getName(), loggedInStaff.getEmail(), loggedInStaff.getBirthDay(), loggedInStaff.getPhoneNum());
+                    line = String.join("|", data[0], loggedInStaff.getID(), loggedInStaff.getPassword(), loggedInStaff.getSiteID(), loggedInStaff.getName(), loggedInStaff.getEmail(), loggedInStaff.getBirthDay(), loggedInStaff.getPhoneNum());
                 }
                 fileContent.append(line).append("\n");
             }
@@ -125,7 +126,7 @@ public class Staff extends Person {
                     BufferedReader reader = new BufferedReader(new FileReader("aux_files/person_txt/Person.txt"));
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        String[] data = line.split(",");
+                        String[] data = line.split("\\|");
                         // Check if the entered ID and password match, considering the new format
                         if (data.length >= 7 && data[1].equals(enteredID) && data[2].equals(enteredPassword)) {
                             frame.dispose(); // Close the login window
