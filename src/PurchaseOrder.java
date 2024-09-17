@@ -43,7 +43,7 @@ public class PurchaseOrder {
         frame.setLayout(new BorderLayout());
 
         // Header Image (replace with your actual image path)
-        ImageIcon imageIcon = new ImageIcon("header2.png");
+        ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
         Image image = imageIcon.getImage();
         Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH); // Adjust height as needed
         imageIcon = new ImageIcon(scaledImage);
@@ -86,7 +86,7 @@ public class PurchaseOrder {
         model.addColumn("Order Date");
 
         // Read from file and populate table
-        try (BufferedReader br = new BufferedReader(new FileReader("orderRequest.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("aux_files/order_txt/orderRequest.txt"))) {
             String line = br.readLine(); // skip header line
 
             while ((line = br.readLine()) != null) {
@@ -165,7 +165,7 @@ public class PurchaseOrder {
         frame.setSize(800, 600);
         frame.setLayout(new BorderLayout());
 
-        ImageIcon imageIcon = new ImageIcon("header2.png");
+        ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
         Image image = imageIcon.getImage();
         Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
         imageIcon = new ImageIcon(scaledImage);
@@ -209,7 +209,7 @@ public class PurchaseOrder {
 
         Map<String, String[]> productDetails = Inventory.mapProductDetails();
 
-        try(BufferedReader br = new BufferedReader(new FileReader("orderDetails.txt"))){
+        try(BufferedReader br = new BufferedReader(new FileReader("aux_files/order_txt/orderDetails.txt"))){
             String line = br.readLine(); //Skip the header line
             int numOfProduct = 0;
             while((line = br.readLine()) != null) {
@@ -256,7 +256,7 @@ public class PurchaseOrder {
         frame.setSize(800, 600);
         frame.setLayout(new BorderLayout());
 
-        ImageIcon imageIcon = new ImageIcon("header2.png");
+        ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
         Image image = imageIcon.getImage();
         Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
         imageIcon = new ImageIcon(scaledImage);
@@ -334,7 +334,7 @@ public class PurchaseOrder {
         frame.setSize(800, 600);
         frame.setLayout(new BorderLayout());
 
-        ImageIcon imageIcon = new ImageIcon("header2.png");
+        ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
         Image image = imageIcon.getImage();
         Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
         imageIcon = new ImageIcon(scaledImage);

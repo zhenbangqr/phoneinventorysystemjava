@@ -29,7 +29,7 @@ public class Inventory {
         JPanel topPanel = new JPanel(new BorderLayout());
 
         // Header Image
-        ImageIcon imageIcon = new ImageIcon("header2.png");
+        ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
         Image image = imageIcon.getImage();
         Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
         imageIcon = new ImageIcon(scaledImage);
@@ -104,7 +104,7 @@ public class Inventory {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
 
-        ImageIcon imageIcon = new ImageIcon("header2.png");
+        ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
         Image image = imageIcon.getImage();
         Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
         imageIcon = new ImageIcon(scaledImage);
@@ -185,7 +185,7 @@ public class Inventory {
 
         JPanel topPanel = new JPanel(new BorderLayout());
 
-        ImageIcon imageIcon = new ImageIcon("header2.png");
+        ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
         Image image = imageIcon.getImage();
         Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
         imageIcon = new ImageIcon(scaledImage);
@@ -299,7 +299,7 @@ public class Inventory {
 
     public static Map<String, String[]> mapProductDetails() {
         Map<String, String[]> phoneDetails = new HashMap<>();
-        String[] productsFileName = {"POCO.txt", "Apple.txt", "Xiaomi.txt", "Samsung.txt", "Nothing.txt"};
+        String[] productsFileName = {"aux_files/all_txt/POCO.txt", "aux_files/all_txt/Apple.txt", "aux_files/all_txt/Xiaomi.txt", "aux_files/all_txt/Samsung.txt", "aux_files/all_txt/Nothing.txt"};
 
         for (String fileName : productsFileName) {
             try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {

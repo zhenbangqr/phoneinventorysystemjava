@@ -71,11 +71,11 @@ public class DisplayAllSKU {
             menuBar.add(manufacturerMenu);
 
             // Add manufacturer options to menu (replace with your actual file names)
-            addManufacturerMenuItem(manufacturerMenu, "Apple", "Apple.txt");
-            addManufacturerMenuItem(manufacturerMenu, "Samsung", "Samsung.txt");
-            addManufacturerMenuItem(manufacturerMenu, "POCO", "POCO.txt");
-            addManufacturerMenuItem(manufacturerMenu, "Nothing", "Nothing.txt");
-            addManufacturerMenuItem(manufacturerMenu, "Xiaomi", "Xiaomi.txt");
+            addManufacturerMenuItem(manufacturerMenu, "Apple", "aux_files/all_txt/Apple.txt");
+            addManufacturerMenuItem(manufacturerMenu, "Samsung", "aux_files/all_txt/Samsung.txt");
+            addManufacturerMenuItem(manufacturerMenu, "POCO", "aux_files/all_txt/POCO.txt");
+            addManufacturerMenuItem(manufacturerMenu, "Nothing", "aux_files/all_txt/Nothing.txt");
+            addManufacturerMenuItem(manufacturerMenu, "Xiaomi", "aux_files/all_txt/Xiaomi.txt");
 
             // Create type filter JComboBox
             typeFilterComboBox = new JComboBox<>();
@@ -85,10 +85,10 @@ public class DisplayAllSKU {
             frame.setVisible(true);
 
             // Load initial data
-            loadProductsFromFile("Apple.txt");
+            loadProductsFromFile("aux_files/all_txt/Apple.txt");
 
             // Get unique types from productList after initial load
-            Set<String> uniqueTypes = getUniqueTypes(readProductsFromFile("Apple.txt"));
+            Set<String> uniqueTypes = getUniqueTypes(readProductsFromFile("aux_files/all_txt/Apple.txt"));
             for (String type : uniqueTypes) {
                 typeFilterComboBox.addItem(type);
             }
