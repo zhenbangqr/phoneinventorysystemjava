@@ -6,13 +6,14 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 public class PurchaseOrder {
     private String orderID;
@@ -182,6 +183,8 @@ public class PurchaseOrder {
         // Add the combined topPanel to the frame's NORTH
         frame.add(topPanel, BorderLayout.NORTH);
 
+
+
         // Table to display stock data
         DefaultTableModel model = new DefaultTableModel() {
             @Override
@@ -247,6 +250,164 @@ public class PurchaseOrder {
         frame.setVisible(true);
     }
 
+    public static void makeOrder(Menu menu, Staff loggedInStaff){
+        JFrame frame = new JFrame("Purchase Order History");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setLayout(new BorderLayout());
+
+        ImageIcon imageIcon = new ImageIcon("header2.png");
+        Image image = imageIcon.getImage();
+        Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
+        imageIcon = new ImageIcon(scaledImage);
+        JLabel imageLabel = new JLabel(imageIcon);
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(imageLabel, BorderLayout.NORTH); // Image at the top of topPanel
+
+        // Create the header panel
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JLabel headerLabel = new JLabel("Choose Phone Brand for Order");
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        headerPanel.add(headerLabel);
+        topPanel.add(headerPanel, BorderLayout.SOUTH); // Header below the image in topPanel
+
+        // Add the combined topPanel to the frame's NORTH
+        frame.add(topPanel, BorderLayout.NORTH);
+
+        JPanel buttonPanel = new JPanel(new GridLayout(5, 1, 0, 10));
+
+        Dimension buttonSize = new Dimension(400, 40);
+        Insets buttonMargin = new Insets(0, 25, 0, 25);
+
+        String[] brandNames = { "POCO", "Samsung", "Xiaomi", "Apple", "Nothing" };
+
+        // Loop through the buttons and assign the corresponding ActionListener
+        for (int i = 0; i < brandNames.length; i++) {
+            String brand = brandNames[i];
+
+            JButton brandButton = new JButton(brand); // Create a button with the brand name
+            brandButton.setPreferredSize(buttonSize); // Set custom button size
+
+            // Simulate margins by wrapping the button in a JPanel with EmptyBorder
+            JPanel buttonWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            buttonWrapper.setBorder(BorderFactory.createEmptyBorder(
+                    buttonMargin.top, buttonMargin.left, buttonMargin.bottom, buttonMargin.right
+            )); // Set the margin around the button
+            buttonWrapper.add(brandButton); // Add the button to the wrapper
+
+            // Add action listener dynamically based on brand
+            brandButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    frame.dispose(); // Close the current Menu frame
+                    displayProductForOrder(menu, loggedInStaff, brand); // Use the brand dynamically
+                }
+            });
+
+            buttonPanel.add(buttonWrapper); // Add the wrapped button to the panel
+        }
+
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.add(buttonPanel, BorderLayout.CENTER);
+
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                menu.setVisible(true);
+            }
+        });
+
+        JPanel backButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        backButtonPanel.add(backButton);
+        bottomPanel.add(backButtonPanel, BorderLayout.SOUTH);
+
+        frame.add(bottomPanel, BorderLayout.SOUTH); // Add the combined panel to SOUTH
+
+        frame.setVisible(true);
+    }
+
+    public static void displayProductForOrder(Menu menu, Staff loggedInStaff, String brand) {
+        JFrame frame = new JFrame("Purchase Order History");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setLayout(new BorderLayout());
+
+        ImageIcon imageIcon = new ImageIcon("header2.png");
+        Image image = imageIcon.getImage();
+        Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
+        imageIcon = new ImageIcon(scaledImage);
+        JLabel imageLabel = new JLabel(imageIcon);
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(imageLabel, BorderLayout.NORTH); // Image at the top of topPanel
+
+        // Create the header panel
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JLabel headerLabel = new JLabel("Make order for " + brand);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        headerPanel.add(headerLabel);
+        topPanel.add(headerPanel, BorderLayout.SOUTH); // Header below the image in topPanel
+
+        // Add the combined topPanel to the frame's NORTH
+        frame.add(topPanel, BorderLayout.NORTH);
+
+        // Table setup
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                return columnIndex == 0 ? Boolean.class : String.class;
+            }
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 0;
+            }
+        };
+
+        JTable table = new JTable(model);
+        JScrollPane scrollPane = new JScrollPane(table);
+        frame.add(scrollPane, BorderLayout.CENTER);
+
+        // Add columns to the table model
+        model.addColumn("Select");
+        model.addColumn("SKU");
+        model.addColumn("Model");
+        model.addColumn("RAM");
+        model.addColumn("ROM");
+        model.addColumn("Color");
+        model.addColumn("Price");
+        model.addColumn("Type");
+
+        String brandFileName = brand + ".txt";
+
+        ArrayList<Product> productList = DisplayAllSKU.readProductsFromFile(brandFileName);
+        for (Product product : productList) {
+            model.addRow(new Object[]{
+                    false,
+                    product.SKU,
+                    product.Model,
+                    product.RAM,
+                    product.ROM,
+                    product.Color,
+                    product.Price,
+                    product.Type
+            });
+        }
+
+        // Back button
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> {
+            frame.dispose();
+            makeOrder(menu, loggedInStaff);
+        });
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(backButton);
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+
+        frame.setVisible(true);
+    }
 
     public String getOrderID() {
         return orderID;
