@@ -32,7 +32,6 @@ class Product {
 }
 
 public class DisplayAllSKU {
-
     private static JTable table;
     private static DefaultTableModel tableModel;
     private static Map<String, String> manufacturerFiles = new HashMap<>();
@@ -184,7 +183,7 @@ public class DisplayAllSKU {
         }
     }
 
-    private static ArrayList<Product> readProductsFromFile(String fileName) {
+    public static ArrayList<Product> readProductsFromFile(String fileName) {
         ArrayList<Product> productList = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
@@ -201,7 +200,6 @@ public class DisplayAllSKU {
         } catch (IOException e) {
             System.out.println("Error reading file: " + e.getMessage());
         }
-
         return productList;
     }
 

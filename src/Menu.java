@@ -75,7 +75,7 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
-                Supplier.displaySupplier(Menu.this, "SP002"); // Pass the Menu frame reference
+                PurchaseOrder.makeOrder(Menu.this, loggedInStaff);
             }
         });
 
