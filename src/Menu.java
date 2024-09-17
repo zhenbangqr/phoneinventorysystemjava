@@ -55,6 +55,7 @@ public class Menu extends JFrame {
             }
         });
 
+<<<<<<< Updated upstream
 //        menuButton2.addActionListener(new ActionListener() {
 //            @Override
 //            public void actionPerformed(ActionEvent e) {
@@ -62,6 +63,15 @@ public class Menu extends JFrame {
 //                new (Menu.this, loggedInStaff.getSiteID());
 //            }
 //        });
+=======
+        menuButton2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Close the current Menu frame
+                StockRequest.displayStockRequest(Menu.this, loggedInStaff.getSiteID()); // Call the method correctly
+            }
+        });
+>>>>>>> Stashed changes
 
         menuButton3.addActionListener(new ActionListener() {
             @Override
