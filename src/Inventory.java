@@ -64,7 +64,7 @@ public class Inventory {
 
         Map<String, String[]> productDetails = Inventory.mapProductDetails();
 
-        String siteFileName = "aux_files/branchStock/" + siteID + ".txt";
+        String siteFileName = "aux_files/branchStock_txt/" + siteID + ".txt";
         // Read and populate table data
         try (BufferedReader br = new BufferedReader(new FileReader(siteFileName))) {
             String line = br.readLine(); // Skip header line
@@ -232,7 +232,7 @@ public class Inventory {
         } else {
             productDetails = mapSpecificProductDetails(brand);
         }
-        String siteFileName = "aux_files/branchStock/" + siteID + ".txt";
+        String siteFileName = "aux_files/branchStock_txt/" + siteID + ".txt";
 
         // Read and populate table data
         try (BufferedReader br = new BufferedReader(new FileReader(siteFileName))) {

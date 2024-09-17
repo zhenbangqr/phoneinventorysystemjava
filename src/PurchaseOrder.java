@@ -379,7 +379,7 @@ public class PurchaseOrder {
         model.addColumn("Price");
         model.addColumn("Type");
 
-        String brandFileName = "aux_files/all_txt" + brand + ".txt";
+        String brandFileName = "aux_files/all_txt/" + brand + ".txt";
 
         ArrayList<Product> productList = DisplayAllSKU.readProductsFromFile(brandFileName);
         for (Product product : productList) {
