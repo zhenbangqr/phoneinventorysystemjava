@@ -47,7 +47,7 @@ public class Supplier extends Person {
 
     public static Map<String, Supplier> readSuppliers() {
         Map<String, Supplier> supplierMap = new HashMap<>();
-        String filePath = "Person.txt";
+        String filePath = "aux_files/person_txt/Person.txt";
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -76,7 +76,7 @@ public class Supplier extends Person {
             frame.setLayout(null);
 
             // Header image
-            ImageIcon imageIcon = new ImageIcon("header2.png");
+            ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
             Image image = imageIcon.getImage();
             Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
             imageIcon = new ImageIcon(scaledImage);

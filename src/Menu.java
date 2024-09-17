@@ -11,7 +11,7 @@ public class Menu extends JFrame {
         setLayout(new BorderLayout());
 
         // Banner
-        ImageIcon imageIcon = new ImageIcon("warehouseheader.png");
+        ImageIcon imageIcon = new ImageIcon("aux_files/images/warehouseheader.png");
         Image image = imageIcon.getImage();
         Image scaledImage = image.getScaledInstance(getWidth(), 200, Image.SCALE_SMOOTH);
         imageIcon = new ImageIcon(scaledImage);
@@ -55,6 +55,14 @@ public class Menu extends JFrame {
             }
         });
 
+        menuButton2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Close the current Menu frame
+                new StockRequest(Menu.this, loggedInStaff.getSiteID());
+            }
+        });
+
         menuButton3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -75,7 +83,7 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
-                Supplier.displaySupplier(Menu.this, "SP002"); // Pass the Menu frame reference
+                PurchaseOrder.makeOrder(Menu.this, loggedInStaff);
             }
         });
 
