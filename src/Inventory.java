@@ -22,6 +22,7 @@ public class Inventory {
         } else {
             frame = new JFrame("Store Stock");
         }
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setLayout(new BorderLayout());
@@ -62,7 +63,7 @@ public class Inventory {
         model.addColumn("Type");
         model.addColumn("Amount");
 
-        Map<String, String[]> productDetails = Inventory.mapProductDetails();
+        Map<String, String[]> productDetails = Inventory.mapAllProductDetails();
 
         String siteFileName = siteID + ".txt";
         // Read and populate table data
@@ -101,6 +102,7 @@ public class Inventory {
     public static void ReportMenu(Menu menu, String siteID) {
         JFrame frame = new JFrame("Report");
         frame.setSize(800, 600);
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
 
@@ -225,13 +227,14 @@ public class Inventory {
         double totalStockValue = 0.0;
 
         // Read and populate table data based on brand and report type
-        Map<String, String[]> productDetails = new HashMap<>();
+        Map<String, String[]> productDetails = new HashMap<>(mapAllProductDetails(brand));
 
-        if (brand.equals("All")) {
-            productDetails = mapProductDetails();
-        } else {
-            productDetails = mapSpecificProductDetails(brand);
-        }
+//        if (brand.equals("All")) {
+//            productDetails = mapProductDetails();
+//        } else {
+//            productDetails = mapSpecificProductDetails(brand);
+//        }
+
         String siteFileName = siteID + ".txt";
 
         // Read and populate table data
@@ -251,9 +254,9 @@ public class Inventory {
                     if (reportType.equals("Stock Value")) {
                         double stockValue = price * quantity;
                         totalStockValue += stockValue;
-                        model.addRow(new Object[]{productInfo[0], productInfo[1], productInfo[2], productInfo[3], productInfo[4], price, productInfo[6], quantity, decimalFormat.format(stockValue)});
+                        model.addRow(new Object[]{productInfo[0], productInfo[1], productInfo[2], productInfo[3], productInfo[4], decimalFormat.format(price), productInfo[6], quantity, decimalFormat.format(stockValue)});
                     } else {
-                        model.addRow(new Object[]{productInfo[0], productInfo[1], productInfo[2], productInfo[3], productInfo[4], price, productInfo[6], quantity});
+                        model.addRow(new Object[]{productInfo[0], productInfo[1], productInfo[2], productInfo[3], productInfo[4], decimalFormat.format(price), productInfo[6], quantity});
                     }
                 }
             }
@@ -264,21 +267,21 @@ public class Inventory {
 
         if (reportType.equals("Stock Value")) {
             model.addRow(new Object[]{"", "", "", "", "", "", "", "Total", decimalFormat.format(totalStockValue)});
-        }
 
-        TableCellRenderer totalRenderer = new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                if (row == model.getRowCount() - 1) {
-                    component.setFont(component.getFont().deriveFont(Font.BOLD));
+            TableCellRenderer totalRenderer = new DefaultTableCellRenderer() {
+                @Override
+                public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                    Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                    if (row == model.getRowCount() - 1) {
+                        component.setFont(component.getFont().deriveFont(Font.BOLD));
+                    }
+                    return component;
                 }
-                return component;
-            }
-        };
+            };
 
-        for (int i = 0; i < model.getColumnCount(); i++) {
-            table.getColumnModel().getColumn(i).setCellRenderer(totalRenderer);
+            for (int i = 0; i < model.getColumnCount(); i++) {
+                table.getColumnModel().getColumn(i).setCellRenderer(totalRenderer);
+            }
         }
 
         JButton backButton = new JButton("Back");
@@ -318,19 +321,45 @@ public class Inventory {
         return phoneDetails;
     }
 
-    public static Map<String, String[]> mapSpecificProductDetails(String phoneBrand) {
+//    public static Map<String, String[]> mapSpecificProductDetails(String phoneBrand) {
+//        Map<String, String[]> phoneDetails = new HashMap<>();
+//
+//        try (BufferedReader br = new BufferedReader(new FileReader(phoneBrand + ".txt"))) {
+//            String line = br.readLine();//skip the header line
+//
+//            while ((line = br.readLine()) != null) {
+//                String[] details = line.split("\\|");
+//                phoneDetails.put(details[0], details);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            JOptionPane.showMessageDialog(null, "Phone file not founded");
+//        }
+//
+//        return phoneDetails;
+//    }
+
+    public static Map<String, String[]> mapAllProductDetails(String... brands) {
         Map<String, String[]> phoneDetails = new HashMap<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(phoneBrand + ".txt"))) {
-            String line = br.readLine();//skip the header line
+        // If no specific brands are passed, use the default list of all brands
+        if (brands.length == 0 || (brands.length == 1 && brands[0].equals("All"))) {
+            brands = new String[]{"POCO", "Apple", "Xiaomi", "Samsung", "Nothing"};
+        }
 
-            while ((line = br.readLine()) != null) {
-                String[] details = line.split("\\|");
-                phoneDetails.put(details[0], details);
+        for (String brand : brands) {
+            String fileName = brand + ".txt";
+            try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+                String line = br.readLine(); // Skip header line
+
+                while ((line = br.readLine()) != null) {
+                    String[] details = line.split("\\|");
+                    phoneDetails.put(details[0], details);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Phone file not found for " + brand);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Phone file not founded");
         }
 
         return phoneDetails;
