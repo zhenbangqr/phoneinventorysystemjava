@@ -11,6 +11,8 @@ import java.awt.event.KeyEvent;
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class PurchaseOrder {
@@ -515,14 +517,14 @@ public class PurchaseOrder {
         // Buttons panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-        // View Details Button
-        JButton confirmOrderButton = new JButton("Confirm Order");
-        buttonPanel.add(confirmOrderButton);
+        // Select Supplier Button
+        JButton selectSupplierButton = new JButton("Confirm and Select Supplier");
+        buttonPanel.add(selectSupplierButton);
 
-        confirmOrderButton.addActionListener(new ActionListener() {
+        selectSupplierButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 boolean allQuantitiesValid = true;
-                HashMap<String, Integer> orderQuantities = new HashMap<>();
+                HashMap<String, Integer> orderDetails = new HashMap<>();
 
                 // Loop through all rows and validate the entered quantities
                 for (int i = 0; i < table.getRowCount(); i++) {
@@ -530,7 +532,7 @@ public class PurchaseOrder {
                     int quantity = (int) model.getValueAt(i, 8); // Get the quantity from the last column
 
                     if (quantity > 0) {
-                        orderQuantities.put(sku, quantity); // Add valid quantity to the map
+                        orderDetails.put(sku, quantity); // Add valid quantity to the map
                     } else {
                         allQuantitiesValid = false;
                         JOptionPane.showMessageDialog(frame, "Please enter a valid quantity for SKU: " + sku, "Invalid Quantity", JOptionPane.WARNING_MESSAGE);
@@ -539,15 +541,8 @@ public class PurchaseOrder {
                 }
 
                 if (allQuantitiesValid) {
-                    String newOrderID = getNextOrderID("aux_files/order_txt/orderDetails.txt");
-
-                    addOrderToFile("aux_files/order_txt/orderDetails.txt", newOrderID, orderQuantities);
-
-
-
-                    JOptionPane.showMessageDialog(frame, "Order placed successfully!");
+                    chooseSupplierForOrder(menu, loggedInStaff, brand, orderDetails);
                     frame.dispose(); // Close the window after successful order
-                    // Process the order (e.g., save to file, update database, etc.)
                 }
             }
         });
@@ -561,6 +556,140 @@ public class PurchaseOrder {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
                 displayProductForOrder(menu, loggedInStaff, brand);
+            }
+        });
+
+        // Add buttons panel to the frame's SOUTH
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+
+        frame.setVisible(true);
+    }
+
+    public static void chooseSupplierForOrder(Menu menu, Staff loggedInStaff,String brand, HashMap<String, Integer> orderDetails) {
+        JFrame frame = new JFrame("Select Supplier");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setLayout(new BorderLayout());
+
+        ImageIcon imageIcon = new ImageIcon("header2.png");
+        Image image = imageIcon.getImage();
+        Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
+        imageIcon = new ImageIcon(scaledImage);
+        JLabel imageLabel = new JLabel(imageIcon);
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(imageLabel, BorderLayout.NORTH);
+
+        // Header
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JLabel headerLabel = new JLabel("Select a Supplier for your Order");
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        headerPanel.add(headerLabel);
+        topPanel.add(headerPanel, BorderLayout.SOUTH);
+
+        frame.add(topPanel, BorderLayout.NORTH);
+
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                return columnIndex == 0 ? Boolean.class : String.class;
+            }
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 0;
+            }
+        };
+
+        JTable table = new JTable(model);
+        JScrollPane scrollPane = new JScrollPane(table);
+        frame.add(scrollPane, BorderLayout.CENTER);
+
+        model.addColumn("Select");
+        model.addColumn("Supplier ID");
+        model.addColumn("State");
+
+        try(BufferedReader br = new BufferedReader(new FileReader("aux_files/person_txt/Person.txt"))){
+            String line = br.readLine(); //Skip the header line
+
+            while((line = br.readLine()) != null) {
+                String[] supplierDetails = line.split("\\|");
+                if(supplierDetails[3].equals(brand)){
+                    model.addRow(new Object[] {
+                            false,
+                            supplierDetails[1], //Supplier ID
+                            supplierDetails[2] //state
+                    });
+                }
+            }
+
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
+        // Radio button selection listener
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) {
+                    // Update all radio buttons in the first column to false except the selected row
+                    for (int i = 0; i < model.getRowCount(); i++) {
+                        if (i != selectedRow) {
+                            model.setValueAt(false, i, 0);
+                        }
+                    }
+                }
+            }
+        });
+
+        // Buttons panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+
+        // Select Supplier Button
+        JButton confirmOrderButton = new JButton("Confirm Order");
+        buttonPanel.add(confirmOrderButton);
+
+        confirmOrderButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) {
+                    String selectedSupplierID = model.getValueAt(selectedRow, 1).toString();
+                    JOptionPane.showMessageDialog(frame, "Order placed successfully!");
+                    String newOrderID = getNextOrderID("aux_files/order_txt/orderDetails.txt");
+                    addOrderToFile(newOrderID, selectedSupplierID, loggedInStaff.getSiteID(), orderDetails);
+                    frame.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Please select an order to view details.", "No Order Selected", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+
+        // View Details Button
+        JButton viewDetailsButton = new JButton("View Supplier Details");
+        buttonPanel.add(viewDetailsButton);
+
+        viewDetailsButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) {
+                    String selectedSupplierID = model.getValueAt(selectedRow, 1).toString();
+                    Supplier.displaySupplier(menu, loggedInStaff, brand, orderDetails, selectedSupplierID);
+                    frame.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Please select an order to view details.", "No Order Selected", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+
+        // Back Button
+        JButton backButton = new JButton("Back");
+        buttonPanel.add(backButton);
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                menu.setVisible(true);
             }
         });
 
@@ -596,13 +725,22 @@ public class PurchaseOrder {
         int orderNumber = Integer.parseInt(orderNumberPart);
         orderNumber++; // Increment the numeric part
 
-        // Format the new OrderID by keeping the 'O' prefix and ensuring it's three digits
+        // Format the new OrderID by keeping the 'O' prefix and ensuring it is three digits
         return String.format("O%03d", orderNumber);
     }
 
-    public static void addOrderToFile(String fileName, String orderID, HashMap<String, Integer> orderQuantities) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) { // true to append to file
-            for (Map.Entry<String, Integer> entry : orderQuantities.entrySet()) {
+    public static void addOrderToFile(String orderID, String supplierID, String siteID, HashMap<String, Integer> orderDetails) {
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
+
+        // Define the formatter for DD/MM/YY format
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yy");
+
+        // Format the date to the desired pattern
+        String formattedDate = currentDate.format(dateFormatter);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("aux_files/order_txt/orderDetails.txt", true))) { // true to append to file
+            for (Map.Entry<String, Integer> entry : orderDetails.entrySet()) {
                 String sku = entry.getKey();
                 int quantity = entry.getValue();
 
@@ -610,6 +748,14 @@ public class PurchaseOrder {
                 writer.write(orderID + "|" + sku + "|" + quantity);
                 writer.newLine(); // Add a new line after each entry
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("aux_files/order_txt/orderRequest.txt", true))) { // true to append to file
+                // Write the order details in the format: OrderID|SKU|Qty
+                writer.write(orderID + "|" + siteID + "|" + supplierID + "|" + "Pending" + "|" + formattedDate);
+                writer.newLine(); // Add a new line after each entry
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -65,7 +65,7 @@ public class Supplier extends Person {
         return supplierMap;
     }
 
-    public static void displaySupplier(Menu menu, Staff loggedInStaff, String brand, ArrayList<String> selectedSKUs, String supplierID) {
+    public static void displaySupplier(Menu menu, Staff loggedInStaff, String brand,  HashMap<String, Integer> orderDetails, String supplierID) {
         Map<String, Supplier> suppliers = readSuppliers(); // Get the map of suppliers
         Supplier supplier = suppliers.get(supplierID); // Retrieve the supplier by ID
 
@@ -119,7 +119,7 @@ public class Supplier extends Person {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     frame.dispose();
-                    PurchaseOrder.chooseSupplierForOrder(menu, loggedInStaff, brand, selectedSKUs);
+                    PurchaseOrder.chooseSupplierForOrder(menu, loggedInStaff, brand, orderDetails);
                 }
             });
 
