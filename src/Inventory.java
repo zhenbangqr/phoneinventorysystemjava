@@ -225,13 +225,8 @@ public class Inventory {
         double totalStockValue = 0.0;
 
         // Read and populate table data based on brand and report type
-        Map<String, String[]> productDetails = new HashMap<>();
+        Map<String, String[]> productDetails = new HashMap<>(mapProductDetails(brand));
 
-        if (brand.equals("All")) {
-            productDetails = mapProductDetails();
-        } else {
-            productDetails = mapSpecificProductDetails(brand);
-        }
         String siteFileName = "aux_files/branchStock_txt/" + siteID + ".txt";
 
         // Read and populate table data
@@ -251,9 +246,9 @@ public class Inventory {
                     if (reportType.equals("Stock Value")) {
                         double stockValue = price * quantity;
                         totalStockValue += stockValue;
-                        model.addRow(new Object[]{productInfo[0], productInfo[1], productInfo[2], productInfo[3], productInfo[4], price, productInfo[6], quantity, decimalFormat.format(stockValue)});
+                        model.addRow(new Object[]{productInfo[0], productInfo[1], productInfo[2], productInfo[3], productInfo[4], decimalFormat.format(price), productInfo[6], quantity, decimalFormat.format(stockValue)});
                     } else {
-                        model.addRow(new Object[]{productInfo[0], productInfo[1], productInfo[2], productInfo[3], productInfo[4], price, productInfo[6], quantity});
+                        model.addRow(new Object[]{productInfo[0], productInfo[1], productInfo[2], productInfo[3], productInfo[4], decimalFormat.format(price), productInfo[6], quantity});
                     }
                 }
             }
@@ -264,21 +259,21 @@ public class Inventory {
 
         if (reportType.equals("Stock Value")) {
             model.addRow(new Object[]{"", "", "", "", "", "", "", "Total", decimalFormat.format(totalStockValue)});
-        }
 
-        TableCellRenderer totalRenderer = new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                if (row == model.getRowCount() - 1) {
-                    component.setFont(component.getFont().deriveFont(Font.BOLD));
+            TableCellRenderer totalRenderer = new DefaultTableCellRenderer() {
+                @Override
+                public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                    Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                    if (row == model.getRowCount() - 1) {
+                        component.setFont(component.getFont().deriveFont(Font.BOLD));
+                    }
+                    return component;
                 }
-                return component;
-            }
-        };
+            };
 
-        for (int i = 0; i < model.getColumnCount(); i++) {
-            table.getColumnModel().getColumn(i).setCellRenderer(totalRenderer);
+            for (int i = 0; i < model.getColumnCount(); i++) {
+                table.getColumnModel().getColumn(i).setCellRenderer(totalRenderer);
+            }
         }
 
         JButton backButton = new JButton("Back");
@@ -297,11 +292,19 @@ public class Inventory {
         frame.setVisible(true);
     }
 
-    public static Map<String, String[]> mapProductDetails() {
+    public static Map<String, String[]> mapProductDetails(String... brands) {
         Map<String, String[]> phoneDetails = new HashMap<>();
-        String[] productsFileName = {"aux_files/all_txt/POCO.txt", "aux_files/all_txt/Apple.txt", "aux_files/all_txt/Xiaomi.txt", "aux_files/all_txt/Samsung.txt", "aux_files/all_txt/Nothing.txt"};
 
-        for (String fileName : productsFileName) {
+        //Commented because scare got any error, if got error just undo it
+        //String[] productsFileName = {"aux_files/all_txt/POCO.txt", "aux_files/all_txt/Apple.txt", "aux_files/all_txt/Xiaomi.txt", "aux_files/all_txt/Samsung.txt", "aux_files/all_txt/Nothing.txt"};
+
+        // If not passing any brands it will display all the phone
+        if (brands.length == 0 || (brands.length == 1 && brands[0].equals("All"))) {
+            brands = new String[]{"POCO", "Apple", "Xiaomi", "Samsung", "Nothing"};
+        }
+
+        for (String brand : brands) {
+            String fileName = "aux_files/all_txt/" + brand + ".txt";
             try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
                 String line = br.readLine();//skip the header line
 
@@ -318,21 +321,21 @@ public class Inventory {
         return phoneDetails;
     }
 
-    public static Map<String, String[]> mapSpecificProductDetails(String phoneBrand) {
-        Map<String, String[]> phoneDetails = new HashMap<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(phoneBrand + ".txt"))) {
-            String line = br.readLine();//skip the header line
-
-            while ((line = br.readLine()) != null) {
-                String[] details = line.split("\\|");
-                phoneDetails.put(details[0], details);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Phone file not founded");
-        }
-
-        return phoneDetails;
-    }
+//    public static Map<String, String[]> mapSpecificProductDetails(String phoneBrand) {
+//        Map<String, String[]> phoneDetails = new HashMap<>();
+//
+//        try (BufferedReader br = new BufferedReader(new FileReader(phoneBrand + ".txt"))) {
+//            String line = br.readLine();//skip the header line
+//
+//            while ((line = br.readLine()) != null) {
+//                String[] details = line.split("\\|");
+//                phoneDetails.put(details[0], details);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            JOptionPane.showMessageDialog(null, "Phone file not founded");
+//        }
+//
+//        return phoneDetails;
+//    }
 }
