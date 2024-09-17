@@ -379,7 +379,7 @@ public class PurchaseOrder {
         model.addColumn("Price");
         model.addColumn("Type");
 
-        String brandFileName = brand + ".txt";
+        String brandFileName = "aux_files/all_txt" + brand + ".txt";
 
         ArrayList<Product> productList = DisplayAllSKU.readProductsFromFile(brandFileName);
         for (Product product : productList) {
@@ -429,6 +429,8 @@ public class PurchaseOrder {
 
         // Add buttons panel to the frame's SOUTH
         frame.add(buttonPanel, BorderLayout.SOUTH);
+
+        frame.setVisible(true);
     }
 
     public String getOrderID() {
