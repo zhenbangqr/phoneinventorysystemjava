@@ -9,8 +9,44 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
-public class StockRequest {
+class Stock{
+    String SKU;
+    int quantityAvailable,quantityRequested;
+
+    public Stock(String SKU, int quantityAvailable, int quantityRequested) {
+        this.SKU = SKU;
+        this.quantityAvailable = quantityAvailable;
+        this.quantityRequested = quantityRequested;
+    }
+
+    public String getSKU() {
+        return SKU;
+    }
+
+    public void setSKU(String SKU) {
+        this.SKU = SKU;
+    }
+
+    public int getQuantityAvailable() {
+        return quantityAvailable;
+    }
+
+    public void setQuantityAvailable(int quantityAvailable) {
+        this.quantityAvailable = quantityAvailable;
+    }
+
+    public int getQuantityRequested() {
+        return quantityRequested;
+    }
+
+    public void setQuantityRequested(int quantityRequested) {
+        this.quantityRequested = quantityRequested;
+    }
+}
+
+public class StockRequest{
 
     public static void displayStockRequest(Menu menu, String siteID) {
         JFrame frame = new JFrame("Stock Request");
@@ -70,13 +106,8 @@ public class StockRequest {
         model.addColumn("Available Quantity");
         model.addColumn("Request Quantity"); // Editable quantity column with JSpinner
 
-<<<<<<< Updated upstream
-        // Read from file and populate table
-        try (BufferedReader br = new BufferedReader(new FileReader("aux_files/order_txt/orderRequest.txt"))) {
-=======
         // Read from file and populate table (W1001.txt for stock)
-        try (BufferedReader br = new BufferedReader(new FileReader("aux_files/warehouse_txt/W001.txt"))) {
->>>>>>> Stashed changes
+        try (BufferedReader br = new BufferedReader(new FileReader("aux_files/branchStock_txt/W001.txt"))) {
             String line = br.readLine(); // skip header line
 
             while ((line = br.readLine()) != null) {
@@ -100,25 +131,33 @@ public class StockRequest {
 
         generateSummaryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ArrayList<String[]> requestedStock = new ArrayList<>();
+                ArrayList<Stock> stockList = new ArrayList<>();
 
                 // Gather all stock with requested quantities greater than 0
                 for (int i = 0; i < model.getRowCount(); i++) {
-                    int requestQty = (int) model.getValueAt(i, 2); // Get spinner value as integer
+                    int requestQty = (int) model.getValueAt(i, 2); // JSpinner returns Integer, this should be safe
+
                     if (requestQty > 0) {
-                        requestedStock.add(new String[]{
-                                model.getValueAt(i, 0).toString(), // SKU
-                                model.getValueAt(i, 1).toString(), // Available Quantity
-                                String.valueOf(requestQty)         // Requested Quantity
-                        });
+                        String stockSKU = (String) model.getValueAt(i, 0);
+                        String stockAvailableString = (String) model.getValueAt(i, 1); // Get value as String
+
+                        // Safely convert available quantity from String to int
+                        int stockAvailable = 0;
+                        try {
+                            stockAvailable = Integer.parseInt(stockAvailableString);
+                        } catch (NumberFormatException numberFormatException) {
+                            System.err.println("Invalid number format for available quantity: " + stockAvailableString);
+                        }
+
+                        stockList.add(new Stock(stockSKU, stockAvailable, requestQty));
                     }
                 }
 
                 // Show stock summary dialog
-                if (requestedStock.isEmpty()) {
+                if (stockList.isEmpty()) {
                     JOptionPane.showMessageDialog(frame, "No stock requested.", "Stock Request Summary", JOptionPane.WARNING_MESSAGE);
                 } else {
-                    displayStockSummary(requestedStock);
+                    displayStockSummary(stockList);
                 }
             }
         });
@@ -141,7 +180,7 @@ public class StockRequest {
         frame.setVisible(true);
     }
 
-    public static void displayStockSummary(ArrayList<String[]> stockSummary) {
+    public static void displayStockSummary(ArrayList<Stock> stockSummary) {
         JFrame frame = new JFrame("Stock Request Summary");
         frame.setSize(600, 400);
         frame.setLayout(new BorderLayout());
@@ -151,53 +190,44 @@ public class StockRequest {
         JScrollPane scrollPane = new JScrollPane(table);
         frame.add(scrollPane, BorderLayout.CENTER);
 
+        model.addColumn("No.");
         model.addColumn("SKU");
+        model.addColumn("Model");
+        model.addColumn("RAM");
+        model.addColumn("ROM");
+        model.addColumn("Color");
+        model.addColumn("Price");
+        model.addColumn("Type");
         model.addColumn("Available Quantity");
         model.addColumn("Requested Quantity");
 
-<<<<<<< Updated upstream
-        Map<String, String[]> productDetails = Inventory.mapProductDetails();
+        Map<String, String[]> stockDetails = Inventory.mapProductDetails();
 
-        try(BufferedReader br = new BufferedReader(new FileReader("aux_files/order_txt/orderDetails.txt"))){
-            String line = br.readLine(); //Skip the header line
-            int numOfProduct = 0;
-            while((line = br.readLine()) != null) {
-                String[] orderDetails = line.split("\\|");
-                if (orderDetails[0].equals(orderID)) {
-                    String[] productInfo = productDetails.get(orderDetails[1]);
-                    numOfProduct++;
-                    if (productInfo != null) {
-                        model.addRow(new Object[]{
-                                numOfProduct, //product number
-                                productInfo[0], //SKU
-                                productInfo[1], //Model
-                                productInfo[2], //RAM
-                                productInfo[3], //ROM
-                                productInfo[4], //Color
-                                productInfo[5], //Price
-                                productInfo[6], //Type
-                                orderDetails[2], //Order Qty
-                        });
-                    }
-                }
+        int rowCount = 1;
+        for (Stock stocks : stockSummary) {
+            String[] productInfo = stockDetails.get(stocks.getSKU());
+            if (productInfo != null) {
+                model.addRow(new Object[]{
+                        rowCount++,
+                        productInfo[0], //SKU
+                        productInfo[1], //Model
+                        productInfo[2], //RAM
+                        productInfo[3], //ROM
+                        productInfo[4], //Color
+                        productInfo[5], //Price
+                        productInfo[6], //Type
+                        stocks.quantityAvailable,
+                        stocks.quantityRequested
+                });
             }
-        }catch(IOException e){
-            e.printStackTrace();
-=======
-        // Add stock data to the summary table
-        for (String[] stock : stockSummary) {
-            model.addRow(stock);
->>>>>>> Stashed changes
         }
 
-        JButton confirmButton = new JButton("Confirm");
-        JButton returnButton = new JButton("Return");
-        returnButton.addActionListener(e -> frame.dispose());
-        confirmButton.addActionListener(e -> JOptionPane.showMessageDialog(frame, "Stock Request Sent !.", "Message", JOptionPane.INFORMATION_MESSAGE));
+
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(e -> frame.dispose());
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        buttonPanel.add(confirmButton);
-        buttonPanel.add(returnButton);
+        buttonPanel.add(closeButton);
         frame.add(buttonPanel, BorderLayout.SOUTH);
 
         frame.setVisible(true);

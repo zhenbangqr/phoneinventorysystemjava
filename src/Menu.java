@@ -59,7 +59,7 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
-                //StockRequest.displayStockRequest(Menu.this, loggedInStaff.getSiteID()); // Call the method correctly
+                StockRequest.displayStockRequest(Menu.this, loggedInStaff.getSiteID()); // Call the method correctly
             }
         });
 
