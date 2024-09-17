@@ -80,7 +80,7 @@ public class StockRequest {
         model.addColumn("Order Date");
 
         // Read from file and populate table
-        try (BufferedReader br = new BufferedReader(new FileReader("orderRequest.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("aux_files/order_txt/orderRequest.txt"))) {
             String line = br.readLine(); // skip header line
 
             while ((line = br.readLine()) != null) {
@@ -201,7 +201,7 @@ public class StockRequest {
 
         Map<String, String[]> productDetails = Inventory.mapProductDetails();
 
-        try(BufferedReader br = new BufferedReader(new FileReader("orderDetails.txt"))){
+        try(BufferedReader br = new BufferedReader(new FileReader("aux_files/order_txt/orderDetails.txt"))){
             String line = br.readLine(); //Skip the header line
             int numOfProduct = 0;
             while((line = br.readLine()) != null) {
