@@ -65,7 +65,7 @@ public class Supplier extends Person {
         return supplierMap;
     }
 
-    public static void displaySupplier(Menu menu, String supplierID) {
+    public static void displaySupplier(Menu menu, Staff loggedInStaff, String brand, ArrayList<String> selectedSKUs, String supplierID) {
         Map<String, Supplier> suppliers = readSuppliers(); // Get the map of suppliers
         Supplier supplier = suppliers.get(supplierID); // Retrieve the supplier by ID
 
@@ -112,29 +112,17 @@ public class Supplier extends Person {
             frame.add(infoPanel);
 
             JButton backButton = new JButton("Back");
-            backButton.setBounds(275, 500, 100, 30);
+            backButton.setBounds(350, 500, 100, 30);
             frame.add(backButton);
-
-            JButton confirmButton = new JButton("Confirm");
-            confirmButton.setBounds(425, 500, 100, 30);
-            frame.add(confirmButton);
 
             backButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     frame.dispose();
-                    menu.setVisible(true);
+                    PurchaseOrder.chooseSupplierForOrder(menu, loggedInStaff, brand, selectedSKUs);
                 }
             });
 
-            confirmButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    frame.dispose();
-                }
-            });
-
-            // Make the frame visible
             frame.setVisible(true);
         } else {
             JOptionPane.showMessageDialog(null, "Supplier with ID " + supplierID + " not found.", "Error", JOptionPane.ERROR_MESSAGE);
