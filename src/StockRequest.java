@@ -182,7 +182,7 @@ public class StockRequest{
 
     public static void displayStockSummary(ArrayList<Stock> stockSummary) {
         JFrame frame = new JFrame("Stock Request Summary");
-        frame.setSize(600, 400);
+        frame.setSize(800, 600);
         frame.setLayout(new BorderLayout());
 
         DefaultTableModel model = new DefaultTableModel();
