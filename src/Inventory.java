@@ -10,6 +10,14 @@ public class Inventory {
         branchCount = 0;
     }
 
+    public static int getBranchCount() {
+        return branchCount;
+    }
+
+    public static void setBranchCount(int branchCount) {
+        Inventory.branchCount = branchCount;
+    }
+
     public Branch[] createBranchArray() {
         try (BufferedReader br = new BufferedReader(new FileReader("aux_files/branch_txt/branch.txt"))) {
             String line = br.readLine(); // Skip header line

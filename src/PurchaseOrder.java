@@ -243,7 +243,7 @@ public class PurchaseOrder {
         frame.setVisible(true);
     }
 
-    public static void makeOrder(Menu menu, Staff loggedInStaff){
+    public static void makeOrder(Menu menu, Staff loggedInStaff, Person[] people){
         JFrame frame = new JFrame("Purchase Order History");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
@@ -293,7 +293,7 @@ public class PurchaseOrder {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     frame.dispose(); // Close the current Menu frame
-                    displayProductForOrder(menu, loggedInStaff, brand); // Use the brand dynamically
+                    displayProductForOrder(menu, loggedInStaff, brand, people); // Use the brand dynamically
                 }
             });
 
@@ -321,7 +321,7 @@ public class PurchaseOrder {
         frame.setVisible(true);
     }
 
-    public static void displayProductForOrder(Menu menu, Staff loggedInStaff, String brand) {
+    public static void displayProductForOrder(Menu menu, Staff loggedInStaff, String brand, Person[] people) {
         JFrame frame = new JFrame("Purchase Order History");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
@@ -410,7 +410,7 @@ public class PurchaseOrder {
 
                 if (!selectedSKUs.isEmpty()) {
                     frame.dispose(); // Close the current window
-                    enterQuantityForSelectedStocks(menu, loggedInStaff, brand, selectedSKUs); // Pass the list of SKUs to the next method
+                    enterQuantityForSelectedStocks(menu, loggedInStaff, brand, selectedSKUs, people); // Pass the list of SKUs to the next method
                 } else {
                     JOptionPane.showMessageDialog(frame, "Please select at least one stock to continue.", "No Stock Selected", JOptionPane.WARNING_MESSAGE);
                 }
@@ -425,7 +425,7 @@ public class PurchaseOrder {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                makeOrder(menu, loggedInStaff);
+                makeOrder(menu, loggedInStaff, people);
             }
         });
 
@@ -435,7 +435,7 @@ public class PurchaseOrder {
         frame.setVisible(true);
     }
 
-    public static void enterQuantityForSelectedStocks(Menu menu, Staff loggedInStaff, String brand, ArrayList<String> selectedSKUs){
+    public static void enterQuantityForSelectedStocks(Menu menu, Staff loggedInStaff, String brand, ArrayList<String> selectedSKUs, Person[] people){
         JFrame frame = new JFrame("Enter Stock Order Quantity");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
@@ -534,7 +534,7 @@ public class PurchaseOrder {
                 }
 
                 if (allQuantitiesValid) {
-                    chooseSupplierForOrder(menu, loggedInStaff, brand, orderDetails);
+                    chooseSupplierForOrder(menu, loggedInStaff, brand, orderDetails, people);
                     frame.dispose(); // Close the window after successful order
                 }
             }
@@ -548,7 +548,7 @@ public class PurchaseOrder {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                displayProductForOrder(menu, loggedInStaff, brand);
+                displayProductForOrder(menu, loggedInStaff, brand, people);
             }
         });
 
@@ -558,7 +558,7 @@ public class PurchaseOrder {
         frame.setVisible(true);
     }
 
-    public static void chooseSupplierForOrder(Menu menu, Staff loggedInStaff,String brand, HashMap<String, Integer> orderDetails) {
+    public static void chooseSupplierForOrder(Menu menu, Staff loggedInStaff, String brand, HashMap<String, Integer> orderDetails, Person[] people) {
         JFrame frame = new JFrame("Select Supplier");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
@@ -601,22 +601,19 @@ public class PurchaseOrder {
         model.addColumn("Supplier ID");
         model.addColumn("State");
 
-        try(BufferedReader br = new BufferedReader(new FileReader("aux_files/person_txt/Person.txt"))){
-            String line = br.readLine(); //Skip the header line
+        for (int i = 0; i < Person.getPeopleCount(); i++) {
+            if (people[i] != null && people[i] instanceof Supplier) {
+                Supplier supplier = (Supplier) people[i];
 
-            while((line = br.readLine()) != null) {
-                String[] supplierDetails = line.split("\\|");
-                if(supplierDetails[3].equals(brand)){
+                // Check if the entered ID and password match
+                if (supplier.getProductBrand().equals(brand)) {
                     model.addRow(new Object[] {
                             false,
-                            supplierDetails[1], //Supplier ID
-                            supplierDetails[2] //state
+                            supplier.getId(), //Supplier ID
+                            supplier.getState() //state
                     });
                 }
             }
-
-        }catch(IOException e){
-            e.printStackTrace();
         }
 
         // Radio button selection listener
@@ -667,7 +664,7 @@ public class PurchaseOrder {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow != -1) {
                     String selectedSupplierID = model.getValueAt(selectedRow, 1).toString();
-                    Supplier.displaySupplier(menu, loggedInStaff, brand, orderDetails, selectedSupplierID);
+                    Supplier.displaySupplier(menu, loggedInStaff, brand, orderDetails, selectedSupplierID, people);
                     frame.dispose();
                 } else {
                     JOptionPane.showMessageDialog(frame, "Please select an order to view details.", "No Order Selected", JOptionPane.WARNING_MESSAGE);

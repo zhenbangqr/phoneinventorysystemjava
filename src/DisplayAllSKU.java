@@ -42,7 +42,7 @@ public class DisplayAllSKU {
     private static JMenu manufacturerMenu;
     private static String currentManufacturer = "Apple";
 
-    public DisplayAllSKU(JFrame parentFrame, Staff loggedInStaff, Branch[] branches, Person[] people) {
+    public DisplayAllSKU(JFrame parentFrame, Staff loggedInStaff, Branch currentBranch, Person[] people, Branch[] branches) {
         this.parentFrame = parentFrame;
         parentFrame.dispose();
 
@@ -127,7 +127,7 @@ public class DisplayAllSKU {
                 {
                     frame.dispose();
                     // Replace placeholders with actual ID and name retrieval logic
-                    new Menu(loggedInStaff, branches, people);
+                    new Menu(loggedInStaff, currentBranch, people, branches);
                 }
             });
 

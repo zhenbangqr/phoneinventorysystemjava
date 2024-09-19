@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Menu extends JFrame {
-    public Menu(Staff loggedInStaff, Branch[] branches, Person[] people) {
+    public Menu(Staff loggedInStaff, Branch currentBranch, Person[] people, Branch[] branches) {
         setTitle("Staff Menu");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -71,7 +71,7 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
-                new DisplayAllSKU(Menu.this, loggedInStaff, branches, people); // Pass the Menu frame reference
+                new DisplayAllSKU(Menu.this, loggedInStaff, currentBranch, people, branches); // Pass the Menu frame reference
             }
         });
 
@@ -101,9 +101,9 @@ public class Menu extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
                 if(loggedInStaff.getSiteID().charAt(0) == 'W') {
-                    PurchaseOrder.makeOrder(Menu.this, loggedInStaff);
+                    PurchaseOrder.makeOrder(Menu.this, loggedInStaff, people);
                 }else{
-                    PurchaseOrder.makeOrder(Menu.this, loggedInStaff);
+                    PurchaseOrder.makeOrder(Menu.this, loggedInStaff, people);
                 }
             }
         });
@@ -122,7 +122,7 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                Staff.profilePage(Menu.this, loggedInStaff);
+                Staff.profilePage(Menu.this, loggedInStaff, people, branches);
             }
         });
 
