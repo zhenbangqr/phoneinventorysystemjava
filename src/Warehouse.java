@@ -1,5 +1,7 @@
-public class Warehouse {
-    String ID;
-    String Name;
-    String Address;
-}
+//public class Warehouse extends Inventory{
+//    String ID;
+//    String Name;
+//    String Address;
+//
+//
+//}
