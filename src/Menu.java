@@ -29,12 +29,22 @@ public class Menu extends JFrame {
         // Buttons panel
         JPanel buttonPanel = new JPanel(new GridLayout(4, 2, 20, 20));
 
+        JButton menuButton4;
+        JButton menuButton5;
+        JButton menuButton6 = null;
+
         JButton menuButton1 = new JButton("Display available stock");
-        JButton menuButton2 = new JButton("Generate stock request");
-        JButton menuButton3 = new JButton("Display all SKU");
-        JButton menuButton4 = new JButton("Placeholder 4");
-        JButton menuButton5 = new JButton("Make Order");
-        JButton menuButton6 = new JButton("Order History");
+        JButton menuButton2 = new JButton("Display all SKU");
+        JButton menuButton3 = new JButton("Generate Report");
+        if(loggedInStaff.getSiteID().charAt(0) == 'W') {
+            menuButton4 = new JButton("View Stock Request");
+            menuButton5 = new JButton("Make Order");
+            menuButton6 = new JButton("Order History");
+        }else{
+            menuButton4 = new JButton("Generate Stock Request");
+            menuButton5 = new JButton("View Stock Request History");
+        }
+
         JButton menuButton7 = new JButton("Profile");
         JButton menuButton8 = new JButton("Logout");
 
@@ -43,7 +53,9 @@ public class Menu extends JFrame {
         buttonPanel.add(menuButton3);
         buttonPanel.add(menuButton4);
         buttonPanel.add(menuButton5);
-        buttonPanel.add(menuButton6);
+        if(menuButton6 != null) {
+            buttonPanel.add(menuButton6);
+        }
         buttonPanel.add(menuButton7);
         buttonPanel.add(menuButton8);
 
@@ -59,7 +71,7 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
-                StockRequest.displayStockRequest(Menu.this, loggedInStaff.getSiteID()); // Call the method correctly
+                new DisplayAllSKU(Menu.this, loggedInStaff); // Pass the Menu frame reference
             }
         });
 
@@ -67,7 +79,7 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
-                new DisplayAllSKU(Menu.this, loggedInStaff); // Pass the Menu frame reference
+                Inventory.ReportMenu(Menu.this, loggedInStaff.getSiteID()); // Pass the Menu frame reference
             }
         });
 
@@ -75,7 +87,12 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
-                Inventory.ReportMenu(Menu.this, loggedInStaff.getSiteID()); // Pass the Menu frame reference
+                if(loggedInStaff.getSiteID().charAt(0) == 'W') {
+                    //////////////////////haven done this method, after done change it
+                    StockRequest.displayStockRequest(Menu.this, loggedInStaff.getSiteID()); // this need to do
+                }else{
+                    StockRequest.displayStockRequest(Menu.this, loggedInStaff.getSiteID()); // Call the method correctly
+                }
             }
         });
 
@@ -83,17 +100,23 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
-                PurchaseOrder.makeOrder(Menu.this, loggedInStaff);
+                if(loggedInStaff.getSiteID().charAt(0) == 'W') {
+                    PurchaseOrder.makeOrder(Menu.this, loggedInStaff);
+                }else{
+                    PurchaseOrder.makeOrder(Menu.this, loggedInStaff);
+                }
             }
         });
 
-        menuButton6.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                PurchaseOrder.displayOrderHistory(Menu.this, loggedInStaff.getSiteID());
-            }
-        });
+        if (menuButton6 != null) {
+            menuButton6.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    dispose();
+                    PurchaseOrder.displayOrderHistory(Menu.this, loggedInStaff.getSiteID());
+                }
+            });
+        }
 
         menuButton7.addActionListener(new ActionListener() {
             @Override

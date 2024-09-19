@@ -1,6 +1,6 @@
 Staff|s|s|W001|Fatt Siong|fattsiong@gmail.com|16/03/2024|01159424214
 Staff|ST002|ZBQR1028|W001|Liow Zhen Bang|zbqr@gmail.com|12/01/2005|0167719430
-Staff|ST003|MWKK,S001|Melvin Wong Ka Kian|mwkk@gmail.com|28/08/2005|0167711234
+Staff|ST003|MWKK|S001|Melvin Wong Ka Kian|mwkk@gmail.com|28/08/2005|0167711234
 Supplier|SP001|Selangor|POCO|Ali|ali@gmail.com|28/08/2005|0123456789
 Supplier|SP002|Selangor|Samsung|Ali|ali@gmail.com|28/08/2005|0123456789
 Supplier|SP003|Selangor|Apple|Ali|ali@gmail.com|28/08/2005|0123456789
