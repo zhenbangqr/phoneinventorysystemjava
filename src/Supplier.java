@@ -10,23 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Supplier extends Person {
-    private String ID;
     private String state;
     private String productBrand;
 
-    public Supplier(String name, String email, String birthDay, String phoneNum, String ID, String state, String productBrand) {
-        super(name, email, birthDay, phoneNum);
-        this.ID = ID;
+    public Supplier(String name, String email, String birthDay, String phoneNum, String id, String state, String productBrand) {
+        super(id, name, email, birthDay, phoneNum);
         this.state = state;
         this.productBrand = productBrand;
-    }
-
-    public String getID() {
-        return ID;
-    }
-
-    public void setID(String ID) {
-        this.ID = ID;
     }
 
     public String getState() {
@@ -56,7 +46,7 @@ public class Supplier extends Person {
                 String[] data = line.split("\\|");
                 if (data[0].equals("Supplier")) {
                     Supplier supplier = new Supplier(data[2], data[3], data[4], data[5], data[1], data[6], data[7]);
-                    supplierMap.put(supplier.getID(), supplier);
+                    supplierMap.put(supplier.getId(), supplier);
                 }
             }
         } catch (IOException ex) {
@@ -92,7 +82,7 @@ public class Supplier extends Person {
 
             // Labels for displaying supplier information
             infoPanel.add(new JLabel("Supplier ID:"));
-            infoPanel.add(new JLabel(supplier.getID()));
+            infoPanel.add(new JLabel(supplier.getId()));
 
             infoPanel.add(new JLabel("Name:"));
             infoPanel.add(new JLabel(supplier.getName()));

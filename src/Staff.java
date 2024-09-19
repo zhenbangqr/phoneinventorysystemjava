@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class Staff extends Person {
-    private String ID;
     private String password;
     private String siteID;
 
@@ -26,9 +25,8 @@ public class Staff extends Person {
 
     }
 
-    public Staff(String ID, String password, String siteID, String name, String email, String birthDay, String phoneNum) {
-        super(name, email, birthDay, phoneNum);
-        this.ID = ID;
+    public Staff(String password, String siteID, String id, String name, String email, String birthDay, String phoneNum) {
+        super(id, name, email, birthDay, phoneNum);
         this.password = password;
         this.siteID = siteID;
     }
@@ -43,9 +41,9 @@ public class Staff extends Person {
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split("\\|");
                 // If this is the line for the staff with the matching ID, update the information
-                if (data[1].equals(loggedInStaff.getID())) {
+                if (data[1].equals(loggedInStaff.getId())) {
                     // Construct new data for this staff
-                    line = String.join("|", data[0], loggedInStaff.getID(), loggedInStaff.getPassword(), loggedInStaff.getSiteID(), loggedInStaff.getName(), loggedInStaff.getEmail(), loggedInStaff.getBirthDay(), loggedInStaff.getPhoneNum());
+                    line = String.join("|", data[0], loggedInStaff.getId(), loggedInStaff.getPassword(), loggedInStaff.getSiteID(), loggedInStaff.getName(), loggedInStaff.getEmail(), loggedInStaff.getBirthDay(), loggedInStaff.getPhoneNum());
                 }
                 fileContent.append(line).append("\n");
             }
@@ -345,7 +343,7 @@ public class Staff extends Person {
 
         // Labels and editable fields
         infoPanel.add(new JLabel("Staff ID:"));
-        JTextField idField = new JTextField(loggedInStaff.getID());
+        JTextField idField = new JTextField(loggedInStaff.getId());
         idField.setEditable(false); // ID shouldn't be edited
         infoPanel.add(idField);
 
@@ -464,14 +462,6 @@ public class Staff extends Person {
         });
 
         frame.setVisible(true);
-    }
-
-    public String getID() {
-        return ID;
-    }
-
-    public void setID(String ID) {
-        this.ID = ID;
     }
 
     public String getPassword() {

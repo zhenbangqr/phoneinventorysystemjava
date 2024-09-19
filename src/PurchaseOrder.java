@@ -1,16 +1,9 @@
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -36,7 +29,7 @@ public class PurchaseOrder {
     }
 
 
-    public static void displayOrderHistory(Menu menu, String siteID) {
+    public static void displayOrderHistory(Menu menu, Staff loggedInStaff) {
         JFrame frame = new JFrame("Purchase Order History");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
@@ -53,7 +46,7 @@ public class PurchaseOrder {
 
         // Create the header panel
         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JLabel headerLabel = new JLabel("Order history for " + siteID);
+        JLabel headerLabel = new JLabel("Order history for " + loggedInStaff.getSiteID());
         headerLabel.setFont(new Font("Arial", Font.BOLD, 16));
         headerPanel.add(headerLabel);
         topPanel.add(headerPanel, BorderLayout.SOUTH); // Header below the image in topPanel
@@ -92,7 +85,7 @@ public class PurchaseOrder {
             while ((line = br.readLine()) != null) {
                 String[] orderData = line.split("\\|");
 
-                if (orderData[1].equals(siteID)) {
+                if (orderData[1].equals(loggedInStaff.getSiteID())) {
                     model.addRow(new Object[]{
                             false, // Selection (radio button)
                             orderData[0], // Order ID
@@ -134,7 +127,7 @@ public class PurchaseOrder {
                 if (selectedRow != -1) {
                     String selectedOrderID = model.getValueAt(selectedRow, 1).toString();
                     frame.dispose();
-                    showOrderDetails(menu, siteID, selectedOrderID);
+                    showOrderDetails(menu, loggedInStaff, selectedOrderID);
                 } else {
                     JOptionPane.showMessageDialog(frame, "Please select an order to view details.", "No Order Selected", JOptionPane.WARNING_MESSAGE);
                 }
@@ -159,7 +152,7 @@ public class PurchaseOrder {
         frame.setVisible(true);
     }
 
-    public static void showOrderDetails(Menu menu, String siteID, String orderID) {
+    public static void showOrderDetails(Menu menu, Staff loggedInStaff, String orderID) {
         JFrame frame = new JFrame("Purchase Order History");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
@@ -207,7 +200,7 @@ public class PurchaseOrder {
         model.addColumn("Type");
         model.addColumn("Quantity");
 
-        Map<String, String[]> productDetails = Inventory.mapProductDetails();
+        Map<String, String[]> productDetails = Branch.mapProductDetails();
 
         try(BufferedReader br = new BufferedReader(new FileReader("aux_files/order_txt/orderDetails.txt"))){
             String line = br.readLine(); //Skip the header line
@@ -240,7 +233,7 @@ public class PurchaseOrder {
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> {
             frame.dispose();
-            PurchaseOrder.displayOrderHistory(menu, siteID);
+            PurchaseOrder.displayOrderHistory(menu, loggedInStaff);
         });
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -494,7 +487,7 @@ public class PurchaseOrder {
         model.addColumn("Type");
         model.addColumn("Quantity");
 
-        Map<String, String[]> productDetails = Inventory.mapProductDetails();
+        Map<String, String[]> productDetails = Branch.mapProductDetails();
 
         int rowCount = 1;
         for (String sku : selectedSKUs) {
