@@ -33,7 +33,7 @@ public class Menu extends JFrame {
         JButton menuButton2 = new JButton("Generate stock request");
         JButton menuButton3 = new JButton("Display all SKU");
         JButton menuButton4 = new JButton("Placeholder 4");
-        JButton menuButton5 = new JButton("Placeholder 5");
+        JButton menuButton5 = new JButton("Make Order");
         JButton menuButton6 = new JButton("Order History");
         JButton menuButton7 = new JButton("Profile");
         JButton menuButton8 = new JButton("Logout");

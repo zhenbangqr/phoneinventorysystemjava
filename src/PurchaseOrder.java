@@ -658,6 +658,7 @@ public class PurchaseOrder {
                     String newOrderID = getNextOrderID("aux_files/order_txt/orderDetails.txt");
                     addOrderToFile(newOrderID, selectedSupplierID, loggedInStaff.getSiteID(), orderDetails);
                     frame.dispose();
+                    menu.setVisible(true);
                 } else {
                     JOptionPane.showMessageDialog(frame, "Please select an order to view details.", "No Order Selected", JOptionPane.WARNING_MESSAGE);
                 }
