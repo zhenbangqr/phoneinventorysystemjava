@@ -13,7 +13,7 @@ public class Supplier extends Person {
     private String state;
     private String productBrand;
 
-    public Supplier(String name, String email, String birthDay, String phoneNum, String id, String state, String productBrand) {
+    public Supplier(String id, String state, String productBrand, String name, String email, String birthDay, String phoneNum) {
         super(id, name, email, birthDay, phoneNum);
         this.state = state;
         this.productBrand = productBrand;
@@ -35,87 +35,79 @@ public class Supplier extends Person {
         this.productBrand = productBrand;
     }
 
-    public static Map<String, Supplier> readSuppliers() {
-        Map<String, Supplier> supplierMap = new HashMap<>();
-        String filePath = "aux_files/person_txt/Person.txt";
+    public static void displaySupplier(Menu menu, Staff loggedInStaff, String brand, HashMap<String, Integer> orderDetails, String supplierID, Person[] people) {
+        JFrame frame = new JFrame("Supplier Details");
+        frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(null);
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
+        // Header image
+        ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
+        Image image = imageIcon.getImage();
+        Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
+        imageIcon = new ImageIcon(scaledImage);
 
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split("\\|");
-                if (data[0].equals("Supplier")) {
-                    Supplier supplier = new Supplier(data[2], data[3], data[4], data[5], data[1], data[6], data[7]);
-                    supplierMap.put(supplier.getId(), supplier);
+        JLabel imageLabel = new JLabel(imageIcon);
+        imageLabel.setBounds(0, 0, frame.getWidth(), 200);
+        frame.add(imageLabel);
+
+        // Info Panel with editable fields
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new GridLayout(0, 2, 10, 10)); // 2 columns, spacing
+        infoPanel.setBounds(250, 250, 300, 200); // Adjust as needed
+
+        boolean supplierFound = false;
+
+        for (int i = 0; i < Person.getPeopleCount(); i++) {
+            if (people[i] != null && people[i] instanceof Supplier) {
+                Supplier supplier = (Supplier) people[i];
+
+                // Check if the entered ID and password match
+                if (supplier.getId().equals(supplierID)) {
+                    supplierFound = true;
+
+                    // Labels for displaying supplier information
+                    infoPanel.add(new JLabel("Supplier ID:"));
+                    infoPanel.add(new JLabel(supplier.getId()));
+
+                    infoPanel.add(new JLabel("Name:"));
+                    infoPanel.add(new JLabel(supplier.getName()));
+
+                    infoPanel.add(new JLabel("Email:"));
+                    infoPanel.add(new JLabel(supplier.getEmail()));
+
+                    infoPanel.add(new JLabel("Date of Birth:"));
+                    infoPanel.add(new JLabel(supplier.getBirthDay()));
+
+                    infoPanel.add(new JLabel("Phone:"));
+                    infoPanel.add(new JLabel(supplier.getPhoneNum()));
+
+                    infoPanel.add(new JLabel("State:"));
+                    infoPanel.add(new JLabel(supplier.getState()));
+
+                    frame.add(infoPanel);
+
+                    frame.setVisible(true);
                 }
             }
-        } catch (IOException ex) {
-            System.err.println("Error reading supplier data: " + ex.getMessage());
         }
-        return supplierMap;
-    }
 
-    public static void displaySupplier(Menu menu, Staff loggedInStaff, String brand,  HashMap<String, Integer> orderDetails, String supplierID) {
-        Map<String, Supplier> suppliers = readSuppliers(); // Get the map of suppliers
-        Supplier supplier = suppliers.get(supplierID); // Retrieve the supplier by ID
-
-        if (supplier != null) {
-            JFrame frame = new JFrame("Supplier Details");
-            frame.setSize(800, 600);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setLayout(null);
-
-            // Header image
-            ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
-            Image image = imageIcon.getImage();
-            Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
-            imageIcon = new ImageIcon(scaledImage);
-
-            JLabel imageLabel = new JLabel(imageIcon);
-            imageLabel.setBounds(0, 0, frame.getWidth(), 200);
-            frame.add(imageLabel);
-
-            // Info Panel with editable fields
-            JPanel infoPanel = new JPanel();
-            infoPanel.setLayout(new GridLayout(0, 2, 10, 10)); // 2 columns, spacing
-            infoPanel.setBounds(250, 250, 300, 200); // Adjust as needed
-
-            // Labels for displaying supplier information
-            infoPanel.add(new JLabel("Supplier ID:"));
-            infoPanel.add(new JLabel(supplier.getId()));
-
-            infoPanel.add(new JLabel("Name:"));
-            infoPanel.add(new JLabel(supplier.getName()));
-
-            infoPanel.add(new JLabel("Email:"));
-            infoPanel.add(new JLabel(supplier.getEmail()));
-
-            infoPanel.add(new JLabel("Date of Birth:"));
-            infoPanel.add(new JLabel(supplier.getBirthDay()));
-
-            infoPanel.add(new JLabel("Phone:"));
-            infoPanel.add(new JLabel(supplier.getPhoneNum()));
-
-            infoPanel.add(new JLabel("State:"));
-            infoPanel.add(new JLabel(supplier.getState()));
-
-            frame.add(infoPanel);
-
-            JButton backButton = new JButton("Back");
-            backButton.setBounds(350, 500, 100, 30);
-            frame.add(backButton);
-
-            backButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    frame.dispose();
-                    PurchaseOrder.chooseSupplierForOrder(menu, loggedInStaff, brand, orderDetails);
-                }
-            });
-
-            frame.setVisible(true);
-        } else {
-            JOptionPane.showMessageDialog(null, "Supplier with ID " + supplierID + " not found.", "Error", JOptionPane.ERROR_MESSAGE);
+        if (!supplierFound) {
+            JOptionPane.showMessageDialog(frame, "Supplier not found");
         }
+
+        JButton backButton = new JButton("Back");
+        backButton.setBounds(350, 500, 100, 30);
+        frame.add(backButton);
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                PurchaseOrder.chooseSupplierForOrder(menu, loggedInStaff, brand, orderDetails, people);
+            }
+        });
+
+
     }
 }

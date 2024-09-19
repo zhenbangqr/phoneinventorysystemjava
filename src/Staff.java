@@ -124,13 +124,20 @@ public class Staff extends Person {
 
                 for (int i = 0; i < Person.getPeopleCount(); i++) {
                     if (people[i] != null && people[i] instanceof Staff) {
-                        Staff loggedInStaff = (Staff) people[i];
+                        Staff staff = (Staff) people[i];
 
                         // Check if the entered ID and password match
-                        if (loggedInStaff.getId().equals(enteredID) && loggedInStaff.getPassword().equals(enteredPassword)) {
+                        if (staff.getId().equals(enteredID) && staff.getPassword().equals(enteredPassword)) {
                             loginSuccess = true;
-                            frame.dispose();
-                            new Menu(loggedInStaff, branches, people); // Open the menu window
+                            for (int j = 0; j < Inventory.getBranchCount(); j++) {
+                                Branch branch = (Branch) branches[j];
+                                if (branch.getId().equals(branches[j].getId())) {
+                                    new Menu(staff, branch, people, branches); // Open the menu window
+                                    frame.dispose();
+                                    break;
+                                }
+                            }
+                            break;
                         }
                     }
                 }
@@ -153,7 +160,7 @@ public class Staff extends Person {
         frame.setVisible(true);
     }
 
-    public static void changePassword(Menu menu, Staff loggedInStaff) {
+    public static void changePassword(Menu menu, Staff loggedInStaff, Person[] people, Branch[] branches) {
         Scanner sc = new Scanner(System.in);
 
         JFrame frame = new JFrame("Staff Change Password");
@@ -190,7 +197,7 @@ public class Staff extends Person {
             public void actionPerformed(ActionEvent e) {
                 if (loggedInStaff.getPassword().equals(passwordField.getText())) {
                     frame.dispose();
-                    Staff.enterNewPassword(menu, loggedInStaff);
+                    Staff.enterNewPassword(menu, loggedInStaff, people, branches);
                 } else {
                     JOptionPane.showMessageDialog(frame, "Invalid Password. Try again.");
                 }
@@ -205,14 +212,14 @@ public class Staff extends Person {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                Staff.profilePage(menu, loggedInStaff);
+                Staff.profilePage(menu, loggedInStaff, people, branches);
             }
         });
 
         frame.setVisible(true);
     }
 
-    public static void enterNewPassword(Menu menu, Staff loggedInStaff){
+    public static void enterNewPassword(Menu menu, Staff loggedInStaff, Person[] people, Branch[] branches){
         JFrame frame = new JFrame("Staff Change Password");
         frame.setSize(800,600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -256,7 +263,7 @@ public class Staff extends Person {
                             Staff.updateProfileInFile(loggedInStaff);
                             JOptionPane.showMessageDialog(frame, "Password changed successfully! Please login again");
                             frame.dispose();
-                            //Staff.loginPage();
+                            Staff.loginPage(people, branches);
                             return;
                         } else {
                             JOptionPane.showMessageDialog(frame, "Invalid format. Password must contain at least one upper character, one lower character, one special character, and one digit with no space.");
@@ -278,7 +285,7 @@ public class Staff extends Person {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                Staff.profilePage(menu, loggedInStaff);
+                Staff.profilePage(menu, loggedInStaff, people, branches);
             }
         });
 
@@ -313,7 +320,7 @@ public class Staff extends Person {
         return hasUpperCase && hasLowerCase && hasDigit && hasSpecialChar;
     }
 
-    public static void profilePage(Menu menu, Staff loggedInStaff) {
+    public static void profilePage(Menu menu, Staff loggedInStaff, Person[] people, Branch[] branches) {
         JFrame frame = new JFrame("Staff Profile");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -376,7 +383,7 @@ public class Staff extends Person {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                Staff.changePassword(menu, loggedInStaff);
+                Staff.changePassword(menu, loggedInStaff, people, branches);
             }
         });
 
