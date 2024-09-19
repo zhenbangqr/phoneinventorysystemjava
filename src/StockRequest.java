@@ -264,7 +264,7 @@
 //        model.addColumn("Available Quantity");
 //        model.addColumn("Requested Quantity");
 //
-//        Map<String, String[]> stockDetails = Inventory.mapProductDetails();
+//        Map<String, String[]> stockDetails = Branch.mapProductDetails();
 //
 //        int rowCount = 1;
 //        for (Stock stocks : stockSummary) {

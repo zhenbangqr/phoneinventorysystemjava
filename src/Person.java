@@ -65,6 +65,14 @@ public class Person {
         this.phoneNum = phoneNum;
     }
 
+    public static int getPeopleCount() {
+        return peopleCount;
+    }
+
+    public static void setPeopleCount(int peopleCount) {
+        Person.peopleCount = peopleCount;
+    }
+
     public Person[] createPersonArray(){
         Person[] personArray = new Person[30];
 

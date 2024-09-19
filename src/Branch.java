@@ -331,4 +331,53 @@ public class Branch {
 
         return phoneDetails;
     }
+
+    public static Branch matchWorkingBranch(Staff loggedInStaff){
+        Inventory inventory = new Inventory();
+        Branch[] branches = inventory.createBranchArray();
+
+        for (Branch branch : branches) {
+            if (branch != null) {
+                Branch curentWorkingBranch = (Branch) branch;
+
+                // Check if the entered ID and password match
+                if (curentWorkingBranch.getId().equals(loggedInStaff.getSiteID())) {
+                    return curentWorkingBranch;
+                }
+            }
+        }
+        return null;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
 }

@@ -4,7 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Menu extends JFrame {
-    public Menu(Staff loggedInStaff) {
+    public Menu(Staff loggedInStaff, Branch[] branches, Person[] people) {
+        Branch currentWorkingBranch = Branch.matchWorkingBranch(loggedInStaff);
+
         setTitle("Staff Menu");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -19,7 +21,7 @@ public class Menu extends JFrame {
         add(imageLabel, BorderLayout.NORTH);
 
         // Welcome message box
-        JLabel welcomeLabel = new JLabel("Welcome, " + loggedInStaff.getID() + " " + loggedInStaff.getName() + "!", SwingConstants.CENTER);
+        JLabel welcomeLabel = new JLabel("Welcome, " + loggedInStaff.getId() + " " + loggedInStaff.getName() + "!", SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 16));
         JPanel welcomePanel = new JPanel(new FlowLayout());
         welcomePanel.add(welcomeLabel);
@@ -63,7 +65,7 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
-                new Inventory(Menu.this, loggedInStaff.getSiteID());
+                new Branch(Menu.this, loggedInStaff);
             }
         });
 
@@ -71,7 +73,7 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
-                new DisplayAllSKU(Menu.this, loggedInStaff); // Pass the Menu frame reference
+                new DisplayAllSKU(Menu.this, loggedInStaff, branches, people); // Pass the Menu frame reference
             }
         });
 
@@ -79,7 +81,7 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
-                Inventory.ReportMenu(Menu.this, loggedInStaff.getSiteID()); // Pass the Menu frame reference
+                Branch.ReportMenu(Menu.this, loggedInStaff); // Pass the Menu frame reference
             }
         });
 
@@ -113,7 +115,7 @@ public class Menu extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     dispose();
-                    PurchaseOrder.displayOrderHistory(Menu.this, loggedInStaff.getSiteID());
+                    PurchaseOrder.displayOrderHistory(Menu.this, loggedInStaff);
                 }
             });
         }

@@ -77,7 +77,7 @@ public class Staff extends Person {
         }
     }
 
-    public static void loginPage() {
+    public static void loginPage(Staff[] people, Branch[] branches) {
         // Create a frame
         JFrame frame = new JFrame("Staff Login");
         frame.setSize(800, 600);  // Increased size of the frame
@@ -120,30 +120,23 @@ public class Staff extends Person {
                 String enteredID = idField.getText();
                 String enteredPassword = new String(passwordField.getPassword());
 
-                try {
-                    BufferedReader reader = new BufferedReader(new FileReader("aux_files/person_txt/Person.txt"));
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        String[] data = line.split("\\|");
-                        // Check if the entered ID and password match, considering the new format
-                        if (data.length >= 7 && data[1].equals(enteredID) && data[2].equals(enteredPassword)) {
-                            frame.dispose(); // Close the login window
-                            Staff loggedInStaff = new Staff(data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
-                            loggedInStaff.checkBirthday(); // Check for birthday after successful login
-                            char[] siteIDArray = data[3].toCharArray();
-                            if(siteIDArray[0] == 'W') { // go to warehouse menu if siteID is start with W
-                                new Menu(loggedInStaff); // Open the menu window
-                            }else{ // else go to store menu
-                                new Menu(loggedInStaff);
-                            }
-                            return;
+                boolean loginSuccess = false;  // To check if login is successful
+
+                for (Person person : people) {
+                    if (person != null && person instanceof Staff) {
+                        Staff staffMember = (Staff) person;
+
+                        // Check if the entered ID and password match
+                        if (staffMember.getId().equals(enteredID) && staffMember.getPassword().equals(enteredPassword)) {
+                            new Menu(staffMember, people, branches); // Open the menu window
+                            loginSuccess = true;
+                            break;  // Exit the loop once login is successful
                         }
                     }
-                    reader.close();
+                }
+
+                if (!loginSuccess) {
                     JOptionPane.showMessageDialog(null, "Invalid ID or password. Try harder.");
-                } catch (IOException ex) {
-                    System.err.println("Error reading staff data: " + ex.getMessage());
-                    JOptionPane.showMessageDialog(null, "Error occurred during login.");
                 }
             }
         });
