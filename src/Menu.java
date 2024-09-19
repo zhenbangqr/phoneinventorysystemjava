@@ -5,8 +5,6 @@ import java.awt.event.ActionListener;
 
 public class Menu extends JFrame {
     public Menu(Staff loggedInStaff, Branch[] branches, Person[] people) {
-        Branch currentWorkingBranch = Branch.matchWorkingBranch(loggedInStaff);
-
         setTitle("Staff Menu");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -132,7 +130,7 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
-                Staff.loginPage();
+                Staff.loginPage(people, branches);
             }
         });
 

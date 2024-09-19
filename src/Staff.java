@@ -25,7 +25,7 @@ public class Staff extends Person {
 
     }
 
-    public Staff(String password, String siteID, String id, String name, String email, String birthDay, String phoneNum) {
+    public Staff(String id, String password, String siteID, String name, String email, String birthDay, String phoneNum) {
         super(id, name, email, birthDay, phoneNum);
         this.password = password;
         this.siteID = siteID;
@@ -77,7 +77,7 @@ public class Staff extends Person {
         }
     }
 
-    public static void loginPage(Staff[] people, Branch[] branches) {
+    public static void loginPage(Person[] people, Branch[] branches) {
         // Create a frame
         JFrame frame = new JFrame("Staff Login");
         frame.setSize(800, 600);  // Increased size of the frame
@@ -122,15 +122,15 @@ public class Staff extends Person {
 
                 boolean loginSuccess = false;  // To check if login is successful
 
-                for (Person person : people) {
-                    if (person != null && person instanceof Staff) {
-                        Staff staffMember = (Staff) person;
+                for (int i = 0; i < Person.getPeopleCount(); i++) {
+                    if (people[i] != null && people[i] instanceof Staff) {
+                        Staff loggedInStaff = (Staff) people[i];
 
                         // Check if the entered ID and password match
-                        if (staffMember.getId().equals(enteredID) && staffMember.getPassword().equals(enteredPassword)) {
-                            new Menu(staffMember, people, branches); // Open the menu window
+                        if (loggedInStaff.getId().equals(enteredID) && loggedInStaff.getPassword().equals(enteredPassword)) {
                             loginSuccess = true;
-                            break;  // Exit the loop once login is successful
+                            frame.dispose();
+                            new Menu(loggedInStaff, branches, people); // Open the menu window
                         }
                     }
                 }
@@ -256,7 +256,7 @@ public class Staff extends Person {
                             Staff.updateProfileInFile(loggedInStaff);
                             JOptionPane.showMessageDialog(frame, "Password changed successfully! Please login again");
                             frame.dispose();
-                            Staff.loginPage();
+                            //Staff.loginPage();
                             return;
                         } else {
                             JOptionPane.showMessageDialog(frame, "Invalid format. Password must contain at least one upper character, one lower character, one special character, and one digit with no space.");

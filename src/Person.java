@@ -2,9 +2,10 @@ import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Person {
-    Person[] people = new Person[20];
     private static int peopleCount;
 
     protected String id;
@@ -74,24 +75,23 @@ public class Person {
     }
 
     public Person[] createPersonArray(){
-        Person[] personArray = new Person[30];
-
+        Person[] people = new Person[20];
         try {
             BufferedReader reader = new BufferedReader(new FileReader("aux_files/person_txt/Person.txt"));
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split("\\|");
 
-                if(data[0].equals("Staff")){
-                    personArray[peopleCount] = new Staff(data[0], data[1], data[2], data[3], data[4], data[5], data[6]);
-                }else{
-                    personArray[peopleCount] = new Supplier(data[0], data[1], data[2], data[3], data[4], data[5], data[6]);
+                if (data[0].equals("Staff")) {
+                    people[peopleCount++] = new Staff(data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
+                } else {
+                    people[peopleCount++] = new Supplier(data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
                 }
             }
+            reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return personArray;
+        return people;
     }
 }
