@@ -12,12 +12,26 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Inventory {
+public class Inventory{
+    JFrame frame;
 
-    private JFrame frame;
+    private String productSKU;
+    private int productSKUQuantity;
 
-    public Inventory(Menu menu, String siteID) {
-        if (siteID.charAt(0) == 'W') {
+    private static Inventory[] branches = new Inventory[20];
+    private static int i = 0;
+
+    public Inventory(String productSKU, int productSKUQuantity){
+        this.productSKU = productSKU;
+        this.productSKUQuantity = productSKUQuantity;
+    }
+
+    public Inventory(){
+
+    }
+
+    public Inventory(Menu menu, Staff loggedInStaff) {
+        if (loggedInStaff.getSiteID().charAt(0) == 'W') {
             frame = new JFrame("Warehouse Stock");
         } else {
             frame = new JFrame("Store Stock");
@@ -38,7 +52,7 @@ public class Inventory {
 
         // Create the header panel
         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JLabel headerLabel = new JLabel("Stock list for " + siteID);
+        JLabel headerLabel = new JLabel("Stock list for " + loggedInStaff.getSiteID());
         headerLabel.setFont(new Font("Arial", Font.BOLD, 16));
         headerPanel.add(headerLabel);
         topPanel.add(headerPanel, BorderLayout.SOUTH); // Header below the image in topPanel
@@ -64,7 +78,7 @@ public class Inventory {
 
         Map<String, String[]> productDetails = Inventory.mapProductDetails();
 
-        String siteFileName = "aux_files/branchStock_txt/" + siteID + ".txt";
+        String siteFileName = "aux_files/branchStock_txt/" + loggedInStaff.getSiteID() + ".txt";
         // Read and populate table data
         try (BufferedReader br = new BufferedReader(new FileReader(siteFileName))) {
             String line = br.readLine(); // Skip header line
@@ -98,7 +112,9 @@ public class Inventory {
         frame.setVisible(true);
     }
 
-    public static void ReportMenu(Menu menu, String siteID) {
+
+
+    public static void ReportMenu(Menu menu, Staff loggedInStaff) {
         JFrame frame = new JFrame("Report");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -114,7 +130,7 @@ public class Inventory {
         frame.add(imageLabel);
 
         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JLabel headerLabel = new JLabel(siteID + " " + getSiteType(siteID));
+        JLabel headerLabel = new JLabel(loggedInStaff.getSiteID() + " " + getSiteType(loggedInStaff.getSiteID()));
         headerLabel.setFont(new Font("Arial", Font.BOLD, 16));
         headerPanel.add(headerLabel);
         headerPanel.setBounds(0, 210, frame.getWidth(), 30);
@@ -152,7 +168,7 @@ public class Inventory {
                 String selectedBrand = (String) brandComboBox.getSelectedItem();
                 String selectedReportType = (String) reportComboBox.getSelectedItem();
                 frame.dispose();
-                generateReport(menu, siteID, selectedBrand, selectedReportType);
+                generateReport(menu, loggedInStaff, selectedBrand, selectedReportType);
             }
         });
 
@@ -177,7 +193,7 @@ public class Inventory {
         }
     }
 
-    private static void generateReport(Menu menu, String siteID, String brand, String reportType) {
+    private static void generateReport(Menu menu, Staff loggedInStaff, String brand, String reportType) {
         JFrame frame = new JFrame("Report");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -194,7 +210,7 @@ public class Inventory {
 
         // Create the header panel
         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JLabel headerLabel = new JLabel(siteID + " " + getSiteType(siteID) + " " + reportType + " Report");
+        JLabel headerLabel = new JLabel(loggedInStaff.getSiteID() + " " + getSiteType(loggedInStaff.getSiteID()) + " " + reportType + " Report");
         headerLabel.setFont(new Font("Arial", Font.BOLD, 16));
         headerPanel.add(headerLabel);
         topPanel.add(headerPanel, BorderLayout.SOUTH); // Header below the image in topPanel
@@ -227,7 +243,7 @@ public class Inventory {
         // Read and populate table data based on brand and report type
         Map<String, String[]> productDetails = new HashMap<>(mapProductDetails(brand));
 
-        String siteFileName = "aux_files/branchStock_txt/" + siteID + ".txt";
+        String siteFileName = "aux_files/branchStock_txt/" + loggedInStaff.getSiteID() + ".txt";
 
         // Read and populate table data
         try (BufferedReader br = new BufferedReader(new FileReader(siteFileName))) {
@@ -281,7 +297,7 @@ public class Inventory {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                Inventory.ReportMenu(menu, siteID);
+                Inventory.ReportMenu(menu, loggedInStaff);
             }
         });
 
@@ -321,21 +337,21 @@ public class Inventory {
         return phoneDetails;
     }
 
-//    public static Map<String, String[]> mapSpecificProductDetails(String phoneBrand) {
-//        Map<String, String[]> phoneDetails = new HashMap<>();
-//
-//        try (BufferedReader br = new BufferedReader(new FileReader(phoneBrand + ".txt"))) {
-//            String line = br.readLine();//skip the header line
-//
-//            while ((line = br.readLine()) != null) {
-//                String[] details = line.split("\\|");
-//                phoneDetails.put(details[0], details);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            JOptionPane.showMessageDialog(null, "Phone file not founded");
-//        }
-//
-//        return phoneDetails;
-//    }
+    public static Inventory[] createInventoryArray() {
+        try (BufferedReader br = new BufferedReader(new FileReader("aux_files/branch_txt/branch.txt"))) {
+            String line = br.readLine(); // Skip header line
+
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split("\\|");
+                if(data[0].startsWith("W")){
+                    branches[i++] = new Warehouse(data[0],data[1],data[2],data[3]);
+                }else{
+                    branches[i++] = new Store(data[0],data[1],data[2],data[3]);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return branches;
+    }
 }
