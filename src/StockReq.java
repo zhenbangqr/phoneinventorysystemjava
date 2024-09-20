@@ -265,7 +265,10 @@ public class StockReq {
     }
     public static void displayStockSummary(String siteID,String warehouseID, ArrayList<Stock> stockSummary) {
 
-        JFrame frame = new JFrame("Stock Summary");
+        JFrame frame = new JFrame("Stock Request Summary");
+        frame.setSize(800, 600);
+        frame.setLayout(new BorderLayout());
+
         DefaultTableModel model = new DefaultTableModel();
         JTable table = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(table);
