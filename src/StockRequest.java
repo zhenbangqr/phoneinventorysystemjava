@@ -238,16 +238,6 @@ public class StockRequest {
             }
         });
 
-// View Stock Request Button
-        JButton viewRequestButton = new JButton("View Request History");
-        buttonPanel.add(viewRequestButton);
-        viewRequestButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayStockHistory(requestFrame,loggedInStaff);
-            }
-        });
-
 // Back Button
         JButton backButton = new JButton("Back");
         buttonPanel.add(backButton);
@@ -342,8 +332,7 @@ public class StockRequest {
         return buttonPanel;
     }
 
-    private static void displayStockHistory(JFrame requestFrame, Staff loggedInStaff){
-
+    public static void displayStockHistory(Menu menu, Staff loggedInStaff){
         JFrame historyFrame = new JFrame("Stock History");
         historyFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         historyFrame.setSize(800, 600);
@@ -389,7 +378,7 @@ public class StockRequest {
         // Column headers
         model.addColumn("Select");
         model.addColumn("Request ID");
-        model.addColumn("Site ID");
+        model.addColumn("Warehouse ID");
         model.addColumn("Status");
         model.addColumn("Order Date");
 
@@ -403,7 +392,7 @@ public class StockRequest {
                     model.addRow(new Object[]{
                             false, // Selection (radio button)
                             orderData[0], // Order ID
-                            orderData[2], // From SiteID
+                            orderData[1], // From SiteID
                             orderData[3], // Request Status
                             orderData[4]  // Request Date
                     });
@@ -441,9 +430,9 @@ public class StockRequest {
                 if (selectedRow != -1) {
                     String selectedRequestID = model.getValueAt(selectedRow, 1).toString();
                     historyFrame.dispose();
-                    displayDetailedHistory(historyFrame,loggedInStaff,selectedRequestID);
+                    displayDetailedHistory(menu,loggedInStaff,selectedRequestID);
                 } else {
-                    JOptionPane.showMessageDialog(requestFrame, "Please select an request to view details.", "No Request Selected", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(historyFrame, "Please select an request to view details.", "No Request Selected", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
@@ -456,6 +445,7 @@ public class StockRequest {
             @Override
             public void actionPerformed(ActionEvent e) {
                 historyFrame.dispose();
+                menu.setVisible(true);
             }
         });
         // Add buttons panel to the frame's SOUTH
@@ -463,7 +453,7 @@ public class StockRequest {
         historyFrame.setVisible(true);
     }
 
-    private static void displayDetailedHistory(JFrame historyFrame, Staff loggedInStaff, String selectedRequestID) {
+    private static void displayDetailedHistory(Menu menu, Staff loggedInStaff, String selectedRequestID) {
         JFrame detailFrame = new JFrame("Detailed Stock History");
         detailFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         detailFrame.setSize(800, 600);
@@ -542,7 +532,7 @@ public class StockRequest {
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> {
             detailFrame.dispose();
-            displayStockHistory(historyFrame,loggedInStaff);
+            displayStockHistory(menu ,loggedInStaff);
         });
 
         // Ensure back button is properly added at the bottom
