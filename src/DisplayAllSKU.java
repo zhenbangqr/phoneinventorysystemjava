@@ -126,7 +126,6 @@ public class DisplayAllSKU {
                 public void actionPerformed(ActionEvent e)
                 {
                     frame.dispose();
-                    // Replace placeholders with actual ID and name retrieval logic
                     new Menu(loggedInStaff, currentBranch, people, branches);
                 }
             });
