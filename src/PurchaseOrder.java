@@ -4,9 +4,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.List;
 
 public class PurchaseOrder {
     private String orderID;
@@ -16,18 +19,17 @@ public class PurchaseOrder {
     private String orderStatus;
     private Date orderDate;
 
-    private static PurchaseOrder[] orders = new PurchaseOrder[20];
-    private static int i = 0;
-
-    public PurchaseOrder(String orderID,String siteID, String productSKU, int quantity, String orderStatus, Date orderDate) {
+    public PurchaseOrder(String orderID,String siteID, String orderStatus, Date orderDate) {
         this.orderID = orderID;
         this.siteID = siteID;
-        this.productSKU = productSKU;
-        this.quantity = quantity;
         this.orderStatus = orderStatus;
         this.orderDate = orderDate;
     }
 
+    public PurchaseOrder(String productSKU, int quantity){
+        this.productSKU = productSKU;
+        this.quantity = quantity;
+    }
 
     public static void displayOrderHistory(Menu menu, Staff loggedInStaff) {
         JFrame frame = new JFrame("Purchase Order History");

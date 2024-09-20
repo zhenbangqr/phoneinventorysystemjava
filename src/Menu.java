@@ -89,7 +89,7 @@ public class Menu extends JFrame {
                 dispose(); // Close the current Menu frame
                 if(loggedInStaff.getSiteID().charAt(0) == 'W') {
                     //////////////////////haven done this method, after done change it
-                    PurchaseOrder.displayPendingRequest(Menu.this, currentBranch); // this need to do
+                    StockRequest.displayStockRequestHistory(Menu.this, currentBranch); // this need to do
                 }else{
                     //StockRequest.displayStockRequest(Menu.this, loggedInStaff.getSiteID()); // Call the method correctly
                 }
