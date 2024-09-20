@@ -5,7 +5,6 @@ public class Main {
 
         Inventory inventory = new Inventory();
         Branch[] branches = inventory.createBranchArray();
-
         Staff.loginPage(people, branches);
         //ReadFromFile.main(args);
     }

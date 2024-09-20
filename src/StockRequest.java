@@ -162,7 +162,7 @@ public class StockRequest{
             @Override
             public TableCellEditor getCellEditor(int row, int column) {
                 if (column == 2) { // Request Quantity column
-                    return new SpinnerEditor(); // Use JSpinner editor for this column
+                    //return new SpinnerEditor(); // Use JSpinner editor for this column
                 }
                 return super.getCellEditor(row, column);
             }
@@ -170,7 +170,7 @@ public class StockRequest{
             @Override
             public TableCellRenderer getCellRenderer(int row, int column) {
                 if (column == 2) { // Request Quantity column
-                    return new SpinnerRenderer(); // Use JSpinner renderer for this column
+                    //return new SpinnerRenderer(); // Use JSpinner renderer for this column
                 }
                 return super.getCellRenderer(row, column);
             }
@@ -392,34 +392,7 @@ public class StockRequest{
         return buttonPanel;
     }
 
-    // SpinnerEditor to allow editing in JSpinner
-    static class SpinnerEditor extends AbstractCellEditor implements TableCellEditor {
-        final JSpinner spinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
 
-        @Override
-        public Object getCellEditorValue() {
-            return spinner.getValue();
-        }
-
-        @Override
-        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            spinner.setValue(value);
-            return spinner;
-        }
-    }
-
-    // SpinnerRenderer to render the spinner in the table
-    static class SpinnerRenderer extends JSpinner implements TableCellRenderer {
-        public SpinnerRenderer() {
-            super(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            setValue(value);
-            return this;
-        }
-    }
 
     public static void addOrderToFile(String requestID, String siteID, String warehouseID, HashMap<String, Integer> requestDetails) {
         // Get the current date
