@@ -234,7 +234,7 @@ public class StockReq {
             }
         });
 
-// View Order Request Button
+// View Stock Request Button
         JButton viewRequestButton = new JButton("View Request History");
         buttonPanel.add(viewRequestButton);
         viewRequestButton.addActionListener(new ActionListener() {
@@ -395,7 +395,7 @@ public class StockReq {
             while ((line = br.readLine()) != null) {
                 String[] orderData = line.split("\\|");
 
-                if (orderData[1].equals(loggedInStaff.getSiteID())) {
+                if (orderData[2].equals(loggedInStaff.getSiteID())) {
                     model.addRow(new Object[]{
                             false, // Selection (radio button)
                             orderData[0], // Order ID
@@ -595,7 +595,7 @@ public class StockReq {
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("aux_files/stock_txt/stockHistory.txt", true))) { // true to append to file
             // Write the order details in the format: OrderID|SKU|Qty
-            writer.write(requestID + "|" + storeID + "|" + warehouseID + "|" + "Pending" + "|" + formattedDate);
+            writer.write(requestID + "|" + warehouseID + "|" + storeID + "|" + "Pending" + "|" + formattedDate);
             writer.newLine(); // Add a new line after each entry
         } catch (IOException e) {
             e.printStackTrace();
