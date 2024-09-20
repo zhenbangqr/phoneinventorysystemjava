@@ -55,41 +55,40 @@ public class StockReq {
         parentFrame.dispose();
 
         SwingUtilities.invokeLater(() -> {
-        JFrame frame = new JFrame(title);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
-        frame.setLayout(new BorderLayout());
+            JFrame frame = new JFrame(title);
+            frame.setVisible(true);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(800, 600);
+            frame.setLayout(new BorderLayout());
 
-        // Main container to hold image and topPanel
-        JPanel mainTopContainer = new JPanel();
-        mainTopContainer.setLayout(new BoxLayout(mainTopContainer, BoxLayout.Y_AXIS));
-        frame.add(mainTopContainer, BorderLayout.NORTH);
+            // Main container to hold image and topPanel
+            JPanel mainTopContainer = new JPanel();
+            mainTopContainer.setLayout(new BoxLayout(mainTopContainer, BoxLayout.Y_AXIS));
+            frame.add(mainTopContainer, BorderLayout.NORTH);
 
-        // Image header
-        ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
-        Image image = imageIcon.getImage();
-        Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH); // Adjust height as needed
-        imageIcon = new ImageIcon(scaledImage);
-        JLabel imageLabel = new JLabel(imageIcon);
+            // Image header
+            ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
+            Image image = imageIcon.getImage();
+            Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH); // Adjust height as needed
+            imageIcon = new ImageIcon(scaledImage);
+            JLabel imageLabel = new JLabel(imageIcon);
 
-        // Add image to the main container
-        mainTopContainer.add(imageLabel);
+            // Add image to the main container
+            mainTopContainer.add(imageLabel);
 
-        displayStockRequestMenu(mainTopContainer,loggedInStaff,currentBranch,people,branches);
+            displayStockRequestMenu(mainTopContainer, loggedInStaff, currentBranch, people, branches);
 
-        ////////////////////////////////////////////
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            ////////////////////////////////////////////
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            ////////////////////////////////////////////
+            JButton viewOrdersButton = new JButton("View Orders");
+            buttonPanel.add(viewOrdersButton);
 
-
-        ////////////////////////////////////////////
-        JButton viewOrdersButton = new JButton("View Orders");
-        buttonPanel.add(viewOrdersButton);
-
-        viewOrdersButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayStockHistory(frame,loggedInStaff);
-            }
+            viewOrdersButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    displayStockHistory(frame, loggedInStaff);
+                }
             });
         });
     }
@@ -178,10 +177,10 @@ public class StockReq {
 
         // Add toolbar to the right side of topPanel
         topPanel.add(toolBar, BorderLayout.EAST);
-
+        displayStockSummaryFromBranch();
     }
 
-    private static void displayStockSummaryFromWarehouse(){
+    private static void displayStockSummaryFromBranch(){
 
     }
 
