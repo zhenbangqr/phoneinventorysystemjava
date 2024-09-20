@@ -83,18 +83,18 @@ public class Menu extends JFrame {
             }
         });
 
-//        menuButton4.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                dispose(); // Close the current Menu frame
-//                if(loggedInStaff.getSiteID().charAt(0) == 'W') {
-//                    //////////////////////haven done this method, after done change it
-//                    StockRequest.displayStockRequest(Menu.this, loggedInStaff.getSiteID()); // this need to do
-//                }else{
-//                    StockRequest.displayStockRequest(Menu.this, loggedInStaff.getSiteID()); // Call the method correctly
-//                }
-//            }
-//        });
+        menuButton4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Close the current Menu frame
+                if(loggedInStaff.getSiteID().charAt(0) == 'W') {
+                    //////////////////////haven done this method, after done change it
+                    PurchaseOrder.displayPendingRequest(Menu.this, currentBranch); // this need to do
+                }else{
+                    //StockRequest.displayStockRequest(Menu.this, loggedInStaff.getSiteID()); // Call the method correctly
+                }
+            }
+        });
 
         menuButton5.addActionListener(new ActionListener() {
             @Override

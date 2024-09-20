@@ -306,9 +306,6 @@ public class Branch {
     public static Map<String, String[]> mapProductDetails(String... brands) {
         Map<String, String[]> phoneDetails = new HashMap<>();
 
-        //Commented because scare got any error, if got error just undo it
-        //String[] productsFileName = {"aux_files/all_txt/POCO.txt", "aux_files/all_txt/Apple.txt", "aux_files/all_txt/Xiaomi.txt", "aux_files/all_txt/Samsung.txt", "aux_files/all_txt/Nothing.txt"};
-
         // If not passing any brands it will display all the phone
         if (brands.length == 0 || (brands.length == 1 && brands[0].equals("All"))) {
             brands = new String[]{"POCO", "Apple", "Xiaomi", "Samsung", "Nothing"};
