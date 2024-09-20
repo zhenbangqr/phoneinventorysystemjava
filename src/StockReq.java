@@ -338,6 +338,25 @@ public class StockReq {
         historyFrame.setLayout(new BorderLayout());
         historyFrame.setVisible(true);
 
+        // Header Image (replace with your actual image path)
+        ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
+        Image image = imageIcon.getImage();
+        Image scaledImage = image.getScaledInstance(historyFrame.getWidth(), 200, Image.SCALE_SMOOTH); // Adjust height as needed
+        imageIcon = new ImageIcon(scaledImage);
+        JLabel imageLabel = new JLabel(imageIcon);
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(imageLabel, BorderLayout.NORTH); // Image at the top of topPanel
+
+        // Create the header panel
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JLabel headerLabel = new JLabel("Order history for " + loggedInStaff.getSiteID());
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        headerPanel.add(headerLabel);
+        topPanel.add(headerPanel, BorderLayout.SOUTH); // Header below the image in topPanel
+
+        // Add the combined topPanel to the frame's NORTH
+        historyFrame.add(topPanel, BorderLayout.NORTH);
+
         // Table setup
         DefaultTableModel model = new DefaultTableModel() {
             @Override
@@ -354,6 +373,14 @@ public class StockReq {
         JTable table = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(table);
         historyFrame.add(scrollPane, BorderLayout.CENTER);
+
+
+        // Column headers
+        model.addColumn("Select");
+        model.addColumn("Order ID");
+        model.addColumn("Supplier ID");
+        model.addColumn("Status");
+        model.addColumn("Order Date");
 
         try (BufferedReader br = new BufferedReader(new FileReader("aux_files/stock_txt/stockHistory.txt"))) {
             String line = br.readLine(); // skip header line
@@ -408,17 +435,29 @@ public class StockReq {
                 }
             }
         });
+
+        // Back Button
+        JButton backButton = new JButton("Back");
+        buttonPanel.add(backButton);
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                historyFrame.dispose();
+                requestFrame.setVisible(true);
+            }
+        });
     }
 
     private static void displayDetailedHistory(JFrame historyFrame,Staff loggedInStaff,String selectedRequestID){
-        JFrame frame = new JFrame("Detailed Stock History");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
-        frame.setLayout(new BorderLayout());
+        JFrame detailframe = new JFrame("Detailed Stock History");
+        detailframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        detailframe.setSize(800, 600);
+        detailframe.setLayout(new BorderLayout());
 
         ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
         Image image = imageIcon.getImage();
-        Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
+        Image scaledImage = image.getScaledInstance(detailframe.getWidth(), 200, Image.SCALE_SMOOTH);
         imageIcon = new ImageIcon(scaledImage);
         JLabel imageLabel = new JLabel(imageIcon);
         JPanel topPanel = new JPanel(new BorderLayout());
@@ -432,7 +471,7 @@ public class StockReq {
         topPanel.add(headerPanel, BorderLayout.SOUTH); // Header below the image in topPanel
 
         // Add the combined topPanel to the frame's NORTH
-        frame.add(topPanel, BorderLayout.NORTH);
+        detailframe.add(topPanel, BorderLayout.NORTH);
 
 
 
@@ -445,7 +484,7 @@ public class StockReq {
         };
         JTable table = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(table);
-        frame.add(scrollPane, BorderLayout.CENTER);
+        detailframe.add(scrollPane, BorderLayout.CENTER);
 
         // Add columns to the table model
         model.addColumn("No.");
@@ -490,15 +529,14 @@ public class StockReq {
         // Back button
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> {
-            frame.dispose();
+            detailframe.dispose();
             displayStockHistory(historyFrame,loggedInStaff);
         });
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.add(backButton);
-        frame.add(buttonPanel, BorderLayout.SOUTH);
-
-        frame.setVisible(true);
+        detailframe.add(buttonPanel, BorderLayout.SOUTH);
+        detailframe.setVisible(true);
     }
 
     // Method to load stock data from branch file
