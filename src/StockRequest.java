@@ -453,8 +453,6 @@ public class StockRequest{
         }
     }
 
-
-
     //done by fattsiong
     //for warehouse site to view and approve/reject the stock request
 
