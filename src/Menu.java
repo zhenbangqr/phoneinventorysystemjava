@@ -105,7 +105,7 @@ public class Menu extends JFrame {
                 if(loggedInStaff.getSiteID().charAt(0) == 'W') {
                     PurchaseOrder.makeOrder(Menu.this, loggedInStaff, people);
                 }else{
-                    PurchaseOrder.makeOrder(Menu.this, loggedInStaff, people);
+                    StockRequest.displayStockHistory(Menu.this, loggedInStaff);
                 }
             }
         });
