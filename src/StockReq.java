@@ -30,41 +30,29 @@ public class StockReq {
         parentFrame.dispose();
 
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame(title);
-            frame.setVisible(true);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(800, 600);
-            frame.setLayout(new BorderLayout());
+            JFrame menuframe = new JFrame(title);
+            menuframe.setVisible(true);
+            menuframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            menuframe.setSize(800, 600);
+            menuframe.setLayout(new BorderLayout());
 
             // Main container to hold image and topPanel
             JPanel mainTopContainer = new JPanel();
             mainTopContainer.setLayout(new BoxLayout(mainTopContainer, BoxLayout.Y_AXIS));
-            frame.add(mainTopContainer, BorderLayout.NORTH);
+            menuframe.add(mainTopContainer, BorderLayout.NORTH);
 
             // Image header
             ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
             Image image = imageIcon.getImage();
-            Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH); // Adjust height as needed
+            Image scaledImage = image.getScaledInstance(menuframe.getWidth(), 200, Image.SCALE_SMOOTH); // Adjust height as needed
             imageIcon = new ImageIcon(scaledImage);
             JLabel imageLabel = new JLabel(imageIcon);
 
             // Add image to the main container
             mainTopContainer.add(imageLabel);
 
-            displayStockRequestMenu(mainTopContainer,frame,loggedInStaff, currentBranch, people, branches);
+            displayStockRequestMenu(mainTopContainer,menuframe,loggedInStaff, currentBranch, people, branches);
 
-            ////////////////////////////////////////////
-            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-            ////////////////////////////////////////////
-            JButton viewOrdersButton = new JButton("View Orders");
-            buttonPanel.add(viewOrdersButton);
-
-            viewOrdersButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    displayStockHistory(mainTopContainer,frame,loggedInStaff,currentBranch,people,branches);
-                }
-            });
         });
     }
 
@@ -113,8 +101,9 @@ public class StockReq {
         return stockList;
     }
 
-    public static void displayStockRequestMenu(JPanel mainTopContainer,JFrame menuframe, Staff loggedInStaff, Branch currentBranch, Person[] people, Branch[] branches){
+    public static void displayStockRequestMenu(JPanel mainTopContainer,JFrame menuFrame, Staff loggedInStaff, Branch currentBranch, Person[] people, Branch[] branches){
         // Panel for current store and toolbar
+        JFrame requestFrame = new JFrame();
 
         JPanel topPanel = new JPanel(new BorderLayout());
         mainTopContainer.add(topPanel); // Add topPanel to the main container below the image
@@ -196,7 +185,7 @@ public class StockReq {
         loadStockData(currentBranch.getId(), model);
 
         JScrollPane scrollPane = new JScrollPane(table);
-        menuframe.add(scrollPane, BorderLayout.CENTER);
+        menuFrame.add(scrollPane, BorderLayout.CENTER);
 
         // Buttons panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -231,7 +220,7 @@ public class StockReq {
 
                 // Show stock summary dialog
                 if (stockList.isEmpty()) {
-                    JOptionPane.showMessageDialog(menuframe, "No stock requested, please check the requested quantity.", "Stock Request Summary", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(menuFrame, "No stock requested, please check the requested quantity.", "Stock Request Summary", JOptionPane.WARNING_MESSAGE);
                 } else {
                     displayStockSummary(currentBranch.getId(), (String) branchSelector.getSelectedItem(), stockList);
                 }
@@ -239,13 +228,13 @@ public class StockReq {
         });
 
 // View Order Request Button
-        JButton viewOrdersButton = new JButton("View Orders");
-        buttonPanel.add(viewOrdersButton);
+        JButton viewRequestButton = new JButton("View Request History");
+        buttonPanel.add(viewRequestButton);
 
-        viewOrdersButton.addActionListener(new ActionListener() {
+        viewRequestButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                displayStockHistory(mainTopContainer,menuframe,loggedInStaff,currentBranch,people,branches);
+                displayStockHistory(requestFrame,loggedInStaff);
             }
         });
 
@@ -256,16 +245,21 @@ public class StockReq {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                menuframe.dispose();
+                menuFrame.dispose();
+                new Menu(loggedInStaff,currentBranch,people,branches);
             }
         });
 
 // Add buttons panel to the frame's SOUTH
-        menuframe.add(buttonPanel, BorderLayout.SOUTH);
+        menuFrame.add(buttonPanel, BorderLayout.SOUTH);
     }
+
     public static void displayStockSummary(String siteID,String warehouseID, ArrayList<Stock> stockSummary) {
 
-        JFrame frame = new JFrame("Stock Summary");
+        JFrame frame = new JFrame("Stock Request Summary");
+        frame.setSize(800, 600);
+        frame.setLayout(new BorderLayout());
+
         DefaultTableModel model = new DefaultTableModel();
         JTable table = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(table);
@@ -307,17 +301,8 @@ public class StockReq {
         frame.add(buttonPanel, BorderLayout.SOUTH);
         frame.setVisible(true);
 
-        JButton backButton = new JButton("Back");
-        buttonPanel.add(backButton);
-
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-            }
-        });
-
     }
+
     private static JPanel getButtonPanel(String siteID,String warehouseID,JFrame frame) {
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -346,9 +331,13 @@ public class StockReq {
         return buttonPanel;
     }
 
-    private static void displayStockHistory(JPanel mainTopContainer,JFrame menuframe, Staff loggedInStaff, Branch currentBranch, Person[] people, Branch[] branches){
+    private static void displayStockHistory(JFrame requestFrame, Staff loggedInStaff){
 
-        JFrame frame = new JFrame("Stock History");
+        JFrame historyFrame = new JFrame("Stock History");
+        historyFrame.setSize(800, 600);
+        historyFrame.setLayout(new BorderLayout());
+        historyFrame.setVisible(true);
+
         // Table setup
         DefaultTableModel model = new DefaultTableModel() {
             @Override
@@ -364,9 +353,9 @@ public class StockReq {
 
         JTable table = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(table);
-        frame.add(scrollPane, BorderLayout.CENTER);
+        historyFrame.add(scrollPane, BorderLayout.CENTER);
 
-        try (BufferedReader br = new BufferedReader(new FileReader("aux_files/order_txt/orderRequest.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("aux_files/stock_txt/stockHistory.txt"))) {
             String line = br.readLine(); // skip header line
 
             while ((line = br.readLine()) != null) {
@@ -376,9 +365,9 @@ public class StockReq {
                     model.addRow(new Object[]{
                             false, // Selection (radio button)
                             orderData[0], // Order ID
-                            orderData[2], // Supplier ID
-                            orderData[3], // Order Status
-                            orderData[4]  // Order Date
+                            orderData[2], // From SiteID
+                            orderData[3], // Request Status
+                            orderData[4]  // Reuqest Date
                     });
                 }
             }
@@ -405,21 +394,111 @@ public class StockReq {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
         // View Details Button
-        JButton viewDetailsButton = new JButton("View Order Details");
+        JButton viewDetailsButton = new JButton("View Request History");
         buttonPanel.add(viewDetailsButton);
 
         viewDetailsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow != -1) {
-                    String selectedOrderID = model.getValueAt(selectedRow, 1).toString();
-                    frame.dispose();
-                    displayStockRequestMenu(mainTopContainer,menuframe,loggedInStaff,currentBranch,people,branches);
+                    String selectedRequestID = model.getValueAt(selectedRow, 1).toString();
+                    displayDetailedHistory(historyFrame,loggedInStaff,selectedRequestID);
                 } else {
-                    JOptionPane.showMessageDialog(frame, "Please select an request to view details.", "No Request Selected", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(historyFrame, "Please select an request to view details.", "No Request Selected", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
+    }
+
+    private static void displayDetailedHistory(JFrame historyFrame,Staff loggedInStaff,String selectedRequestID){
+        JFrame frame = new JFrame("Detailed Stock History");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setLayout(new BorderLayout());
+
+        ImageIcon imageIcon = new ImageIcon("aux_files/images/header2.png");
+        Image image = imageIcon.getImage();
+        Image scaledImage = image.getScaledInstance(frame.getWidth(), 200, Image.SCALE_SMOOTH);
+        imageIcon = new ImageIcon(scaledImage);
+        JLabel imageLabel = new JLabel(imageIcon);
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(imageLabel, BorderLayout.NORTH); // Image at the top of topPanel
+
+        // Create the header panel
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JLabel headerLabel = new JLabel("Request details for " + selectedRequestID);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        headerPanel.add(headerLabel);
+        topPanel.add(headerPanel, BorderLayout.SOUTH); // Header below the image in topPanel
+
+        // Add the combined topPanel to the frame's NORTH
+        frame.add(topPanel, BorderLayout.NORTH);
+
+
+
+        // Table to display stock data
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        JTable table = new JTable(model);
+        JScrollPane scrollPane = new JScrollPane(table);
+        frame.add(scrollPane, BorderLayout.CENTER);
+
+        // Add columns to the table model
+        model.addColumn("No.");
+        model.addColumn("SKU");
+        model.addColumn("Model");
+        model.addColumn("RAM");
+        model.addColumn("ROM");
+        model.addColumn("Color");
+        model.addColumn("Price");
+        model.addColumn("Type");
+        model.addColumn("Quantity");
+
+        Map<String, String[]> productDetails = Branch.mapProductDetails();
+
+        try(BufferedReader br = new BufferedReader(new FileReader("aux_files/order_txt/orderDetails.txt"))){
+            String line = br.readLine(); //Skip the header line
+            int numOfProduct = 0;
+            while((line = br.readLine()) != null) {
+                String[] orderDetails = line.split("\\|");
+                if (orderDetails[0].equals(selectedRequestID)) {
+                    String[] productInfo = productDetails.get(orderDetails[1]);
+                    numOfProduct++;
+                    if (productInfo != null) {
+                        model.addRow(new Object[]{
+                                numOfProduct, //product number
+                                productInfo[0], //SKU
+                                productInfo[1], //Model
+                                productInfo[2], //RAM
+                                productInfo[3], //ROM
+                                productInfo[4], //Color
+                                productInfo[5], //Price
+                                productInfo[6], //Type
+                                orderDetails[2], //Order Qty
+                        });
+                    }
+                }
+            }
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
+        // Back button
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> {
+            frame.dispose();
+            displayStockHistory(historyFrame,loggedInStaff);
+        });
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(backButton);
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+
+        frame.setVisible(true);
     }
 
     // Method to load stock data from branch file
