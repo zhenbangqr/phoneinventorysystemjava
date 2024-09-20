@@ -273,7 +273,7 @@ public class StockRequest{
         JScrollPane scrollPane = new JScrollPane(orderTextArea);
         orderFrame.add(scrollPane, BorderLayout.CENTER);
 
-        // Read the orderRequest.txt file and display the contents in the JTextArea
+        // Read the stockHistory.txt file and display the contents in the JTextArea
         try (BufferedReader reader = new BufferedReader(new FileReader("aux_files/order_txt/stockHistory.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
