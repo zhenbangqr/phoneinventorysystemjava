@@ -1,5 +1,8 @@
 Staff|s|Tfs-0316|W001|Fatt Siong|fattsiong@gmail.com|16/03/2024|01159424214
 Staff|s|Tfs-0316|W001|Fatt Siong|fattsiong@gmail.com|16/03/2024|01159424214
+Staff|s|s|S001|Fatt Siong|fattsiong@gmail.com|16/03/2024|01159424214
+Staff|w|w|W001|Fatt Siong|fattsiong@gmail.com|16/03/2024|01159424214
+Staff|w1|w1|W002|Fatt Siong|fattsiong@gmail.com|16/03/2024|01159424214
 Staff|ST003|MWKK|S002|Melvin Wong Ka Kian|mwkk@gmail.com|28/08/2005|0167711234
 Supplier|SP001|Selangor|POCO|Ali|ali@gmail.com|28/08/2005|0123456789
 Supplier|SP002|Selangor|Samsung|Ali|ali@gmail.com|28/08/2005|0123456789
