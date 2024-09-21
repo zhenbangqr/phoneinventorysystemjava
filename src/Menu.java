@@ -10,11 +10,17 @@ public class Menu extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Banner
-        ImageIcon imageIcon = new ImageIcon("aux_files/images/warehouseheader.png");
+        ImageIcon imageIcon;
+
+        imageIcon = loggedInStaff.getSiteID().charAt(0) == 'W'
+                ? new ImageIcon("aux_files/images/warehouseheader.png")
+                : new ImageIcon("aux_files/images/storeheader.png");
+
         Image image = imageIcon.getImage();
         Image scaledImage = image.getScaledInstance(getWidth(), 200, Image.SCALE_SMOOTH);
-        imageIcon = new ImageIcon(scaledImage);
+
+        imageIcon.setImage(scaledImage);
+
         JLabel imageLabel = new JLabel(imageIcon);
         add(imageLabel, BorderLayout.NORTH);
 
