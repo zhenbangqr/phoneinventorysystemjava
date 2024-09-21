@@ -123,30 +123,36 @@ public class Staff extends Person {
                 try {
                     BufferedReader reader = new BufferedReader(new FileReader("aux_files/person_txt/Person.txt"));
                     String line;
+                    boolean loginSuccessful = false; // Flag to track successful login
+
                     while ((line = reader.readLine()) != null) {
                         String[] data = line.split("\\|");
-                        // Check if the entered ID and password match, considering the new format
                         if (data.length >= 7 && data[1].equals(enteredID) && data[2].equals(enteredPassword)) {
-                            frame.dispose(); // Close the login window
+                            frame.dispose();
                             Staff loggedInStaff = new Staff(data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
                             Inventory inventory = new Inventory();
                             Branch currentBranch = inventory.createCurrentBranchObject(loggedInStaff.getSiteID());
-                            Staff.checkBirthday(loggedInStaff.getBirthDay(),loggedInStaff.getName()); // Check for birthday after successful login
+                            Staff.checkBirthday(loggedInStaff.getBirthDay(),loggedInStaff.getName());
                             char[] siteIDArray = data[3].toCharArray();
-                            if(siteIDArray[0] == 'W') { // go to warehouse menu if siteID is start with W
-                                new Menu(loggedInStaff, currentBranch); // Open the menu window
-                            }else{ // else go to store menu
+                            if(siteIDArray[0] == 'W') {
+                                new Menu(loggedInStaff, currentBranch);
+                            }else{
                                 new Menu(loggedInStaff, currentBranch);
                             }
-                            return;
+                            loginSuccessful = true; // Set the flag to true
+                            break; // Exit the loop after successful login
                         }
                     }
                     reader.close();
+
+                    if (!loginSuccessful) { // If the flag remains false, show error
+                        JOptionPane.showMessageDialog(null, "Invalid ID or password. Please try again.");
+                    }
+
                 } catch (IOException ex) {
                     System.err.println("Error reading staff data: " + ex.getMessage());
                     JOptionPane.showMessageDialog(null, "Error occurred during login.");
                 }
-
             }
         });
 

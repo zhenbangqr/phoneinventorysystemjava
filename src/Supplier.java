@@ -69,7 +69,7 @@ public class Supplier extends Person {
             infoPanel.add(new JLabel("Email:"));
             infoPanel.add(new JLabel(supplier.getEmail()));
 
-            infoPanel.add(new JLabel("Date of Birth:"));
+            infoPanel.add(new JLabel("Date Added:"));
             infoPanel.add(new JLabel(supplier.getBirthDay()));
 
             infoPanel.add(new JLabel("Phone:"));
