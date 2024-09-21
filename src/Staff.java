@@ -59,16 +59,16 @@ public class Staff extends Person {
         }
     }
 
-    public void checkBirthday() {
+    public static void checkBirthday(String birthday, String name) {
 
         // Cut the date to DD/MM only
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM");
         String todayDM = dateFormat.format(new Date());
-        String birthdayDM = getBirthDay().substring(0, 5);
+        String birthdayDM = birthday.substring(0, 5);
 
         // Check birthday
         if (todayDM.equals(birthdayDM)) {
-            JOptionPane pane = new JOptionPane("Happy Birthday, " + getName() + "!", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, null, null);
+            JOptionPane pane = new JOptionPane("Happy Birthday, " + name + "!", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, null, null);
             JDialog dialog = pane.createDialog(null, "Birthday");
 
             // Not modal = Not hiding menu page
@@ -77,7 +77,7 @@ public class Staff extends Person {
         }
     }
 
-    public static void loginPage(Person[] people, Branch[] branches) {
+    public static void loginPage() {
         // Create a frame
         JFrame frame = new JFrame("Staff Login");
         frame.setSize(800, 600);  // Increased size of the frame
@@ -120,31 +120,33 @@ public class Staff extends Person {
                 String enteredID = idField.getText();
                 String enteredPassword = new String(passwordField.getPassword());
 
-                boolean loginSuccess = false;  // To check if login is successful
-
-                for (int i = 0; i < Person.getPeopleCount(); i++) {
-                    if (people[i] != null && people[i] instanceof Staff) {
-                        Staff staff = (Staff) people[i];
-
-                        // Check if the entered ID and password match
-                        if (staff.getId().equals(enteredID) && staff.getPassword().equals(enteredPassword)) {
-                            loginSuccess = true;
-                            for (int j = 0; j < Inventory.getBranchCount(); j++) {
-                                Branch branch = (Branch) branches[j];
-                                if (branch.getId().equals(branches[j].getId())) {
-                                    new Menu(staff, branch, people, branches); // Open the menu window
-                                    frame.dispose();
-                                    break;
-                                }
+                try {
+                    BufferedReader reader = new BufferedReader(new FileReader("aux_files/person_txt/Person.txt"));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        String[] data = line.split("\\|");
+                        // Check if the entered ID and password match, considering the new format
+                        if (data.length >= 7 && data[1].equals(enteredID) && data[2].equals(enteredPassword)) {
+                            frame.dispose(); // Close the login window
+                            Staff loggedInStaff = new Staff(data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
+                            Inventory inventory = new Inventory();
+                            Branch currentBranch = inventory.createCurrentBranchObject(loggedInStaff.getSiteID());
+                            Staff.checkBirthday(loggedInStaff.getBirthDay(),loggedInStaff.getName()); // Check for birthday after successful login
+                            char[] siteIDArray = data[3].toCharArray();
+                            if(siteIDArray[0] == 'W') { // go to warehouse menu if siteID is start with W
+                                new Menu(loggedInStaff, currentBranch); // Open the menu window
+                            }else{ // else go to store menu
+                                new Menu(loggedInStaff, currentBranch);
                             }
-                            break;
+                            return;
                         }
                     }
+                    reader.close();
+                } catch (IOException ex) {
+                    System.err.println("Error reading staff data: " + ex.getMessage());
+                    JOptionPane.showMessageDialog(null, "Error occurred during login.");
                 }
 
-                if (!loginSuccess) {
-                    JOptionPane.showMessageDialog(null, "Invalid ID or password. Try harder.");
-                }
             }
         });
 
@@ -160,7 +162,7 @@ public class Staff extends Person {
         frame.setVisible(true);
     }
 
-    public static void changePassword(Menu menu, Staff loggedInStaff, Person[] people, Branch[] branches) {
+    public static void changePassword(Menu menu, Staff loggedInStaff) {
         Scanner sc = new Scanner(System.in);
 
         JFrame frame = new JFrame("Staff Change Password");
@@ -197,7 +199,7 @@ public class Staff extends Person {
             public void actionPerformed(ActionEvent e) {
                 if (loggedInStaff.getPassword().equals(passwordField.getText())) {
                     frame.dispose();
-                    Staff.enterNewPassword(menu, loggedInStaff, people, branches);
+                    Staff.enterNewPassword(menu, loggedInStaff);
                 } else {
                     JOptionPane.showMessageDialog(frame, "Invalid Password. Try again.");
                 }
@@ -212,14 +214,14 @@ public class Staff extends Person {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                Staff.profilePage(menu, loggedInStaff, people, branches);
+                Staff.profilePage(menu, loggedInStaff);
             }
         });
 
         frame.setVisible(true);
     }
 
-    public static void enterNewPassword(Menu menu, Staff loggedInStaff, Person[] people, Branch[] branches){
+    public static void enterNewPassword(Menu menu, Staff loggedInStaff){
         JFrame frame = new JFrame("Staff Change Password");
         frame.setSize(800,600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -263,7 +265,7 @@ public class Staff extends Person {
                             Staff.updateProfileInFile(loggedInStaff);
                             JOptionPane.showMessageDialog(frame, "Password changed successfully! Please login again");
                             frame.dispose();
-                            Staff.loginPage(people, branches);
+                            Staff.loginPage();
                             return;
                         } else {
                             JOptionPane.showMessageDialog(frame, "Invalid format. Password must contain at least one upper character, one lower character, one special character, and one digit with no space.");
@@ -285,7 +287,7 @@ public class Staff extends Person {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                Staff.profilePage(menu, loggedInStaff, people, branches);
+                Staff.profilePage(menu, loggedInStaff);
             }
         });
 
@@ -320,7 +322,7 @@ public class Staff extends Person {
         return hasUpperCase && hasLowerCase && hasDigit && hasSpecialChar;
     }
 
-    public static void profilePage(Menu menu, Staff loggedInStaff, Person[] people, Branch[] branches) {
+    public static void profilePage(Menu menu, Staff loggedInStaff) {
         JFrame frame = new JFrame("Staff Profile");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -383,7 +385,7 @@ public class Staff extends Person {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                Staff.changePassword(menu, loggedInStaff, people, branches);
+                Staff.changePassword(menu, loggedInStaff);
             }
         });
 

@@ -61,10 +61,10 @@ public class Stock{
                 int quantity = Integer.parseInt(details[1]);
 
 
-                Stock stockRequest = new Stock(productSKU, quantity);
+                Stock stocks = new Stock(productSKU, quantity);
 
                 // Add to the list
-                currentStock.add(stockRequest);
+                currentStock.add(stocks);
             }
         } catch (IOException e) {
             e.printStackTrace();

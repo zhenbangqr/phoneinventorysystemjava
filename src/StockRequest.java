@@ -33,7 +33,7 @@ public class StockRequest {
         this.requestDate = requestDate;
     }
 
-    public StockRequest(String title, JFrame parentFrame, Staff loggedInStaff, Branch currentBranch, Person[] people, Branch[] branches){
+    public StockRequest(String title, JFrame parentFrame, Staff loggedInStaff, Branch currentBranch){
         this.parentFrame = parentFrame;
         parentFrame.dispose();
 
@@ -59,7 +59,7 @@ public class StockRequest {
             // Add image to the main container
             mainTopContainer.add(imageLabel);
 
-            displayStockRequestMenu(mainTopContainer,menuFrame,loggedInStaff, currentBranch, people, branches);
+            displayStockRequestMenu(mainTopContainer,menuFrame,loggedInStaff, currentBranch);
 
         });
     }
@@ -109,7 +109,7 @@ public class StockRequest {
         return stockList;
     }
 
-    public static void displayStockRequestMenu(JPanel mainTopContainer, JFrame menuFrame, Staff loggedInStaff, Branch currentBranch, Person[] people, Branch[] branches){
+    public static void displayStockRequestMenu(JPanel mainTopContainer, JFrame menuFrame, Staff loggedInStaff, Branch currentBranch){
         // Panel for current store and toolbar
 
         JFrame requestFrame = new JFrame();
@@ -138,6 +138,9 @@ public class StockRequest {
         JComboBox<String> branchSelector = new JComboBox<>();
         branchSelector.setFont(new Font("Arial", Font.BOLD, 16));
         branchSelector.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        Inventory inventory = new Inventory();
+        Branch[] branches = inventory.createBranchArray();
 
         for (Branch branch : branches) {
             if (branch != null && branch instanceof Branch && branch.getId().charAt(0) == 'W') {
@@ -192,7 +195,7 @@ public class StockRequest {
         });
 
         // Initial stock load for the currentBranch
-        loadStockData(currentBranch.getId(), model);
+        loadStockData("W001", model);
 
 
         JScrollPane scrollPane = new JScrollPane(table);
@@ -246,7 +249,7 @@ public class StockRequest {
             @Override
             public void actionPerformed(ActionEvent e) {
                 menuFrame.dispose();
-                new Menu(loggedInStaff,currentBranch,people,branches);
+                new Menu(loggedInStaff,currentBranch);
             }
         });
 
@@ -809,11 +812,12 @@ public class StockRequest {
 
         Map<String, String[]> productDetails = Branch.mapProductDetails();
         List<Stock> warehouseCurrentStock = Stock.createCurrentStockArrayList(currentBranch.getId());
+
         boolean checkStockEnough = true;
 
         try(BufferedReader br = new BufferedReader(new FileReader("aux_files/stock_txt/stockDetails.txt"))){
-            String line = br.readLine(); //Skip the header line
             int numOfProduct = 0;
+            String line = br.readLine(); //Skip the header line
             while((line = br.readLine()) != null) {
                 String[] requestDetails = line.split("\\|");
                 if (requestDetails[0].equals(currentStockRequest.getRequestID())) {
@@ -823,7 +827,9 @@ public class StockRequest {
                     int availableStock = getAvailableStock(requestDetails[1], warehouseCurrentStock);
                     numOfProduct++;
                     if (productInfo != null) {
-                        checkStockEnough = requestedQuantity <= availableStock;
+                        if(requestedQuantity > availableStock){
+                            checkStockEnough = false;
+                        }
 
                         model.addRow(new Object[]{
                                 numOfProduct, //product number

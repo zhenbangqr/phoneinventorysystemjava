@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Menu extends JFrame {
-    public Menu(Staff loggedInStaff, Branch currentBranch, Person[] people, Branch[] branches) {
+    public Menu(Staff loggedInStaff, Branch currentBranch) {
         setTitle("Staff Menu");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -71,7 +71,7 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
-                new DisplayAllSKU(Menu.this, loggedInStaff, currentBranch, people, branches); // Pass the Menu frame reference
+                new DisplayAllSKU(Menu.this); // Pass the Menu frame reference
             }
         });
 
@@ -88,12 +88,10 @@ public class Menu extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
                 if(loggedInStaff.getSiteID().charAt(0) == 'W') {
-                    //////////////////////haven done this method, after done change it
-                   StockRequest.displayStockRequestHistory(Menu.this,currentBranch);
+                   StockRequest.displayStockRequestHistory(Menu.this, currentBranch);
                 }
                 if(loggedInStaff.getSiteID().charAt(0) == 'S') {
-                    //////////////////////haven done this method, after done change it
-                    new StockRequest("Stock Request",Menu.this,loggedInStaff,currentBranch,people,branches); // this need to do
+                    new StockRequest("Stock Request",Menu.this, loggedInStaff, currentBranch); // this need to do
                 }
             }
         });
@@ -103,7 +101,7 @@ public class Menu extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
                 if(loggedInStaff.getSiteID().charAt(0) == 'W') {
-                    PurchaseOrder.makeOrder(Menu.this, loggedInStaff, people);
+                    PurchaseOrder.makeOrder(Menu.this, loggedInStaff.getSiteID());
                 }else{
                     StockRequest.displayStockHistory(Menu.this, loggedInStaff);
                 }
@@ -115,7 +113,7 @@ public class Menu extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     dispose();
-                    PurchaseOrder.displayOrderHistory(Menu.this, loggedInStaff);
+                    PurchaseOrder.displayOrderHistory(Menu.this, loggedInStaff.getSiteID());
                 }
             });
         }
@@ -124,7 +122,7 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                Staff.profilePage(Menu.this, loggedInStaff, people, branches);
+                Staff.profilePage(Menu.this, loggedInStaff);
             }
         });
 
@@ -132,7 +130,7 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the current Menu frame
-                Staff.loginPage(people, branches);
+                Staff.loginPage();
             }
         });
 

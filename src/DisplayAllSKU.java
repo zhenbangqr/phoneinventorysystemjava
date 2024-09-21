@@ -37,103 +37,97 @@ public class DisplayAllSKU {
     private static Map<String, String> manufacturerFiles = new HashMap<>();
     private static JComboBox<String> typeFilterComboBox;
 
-    private JFrame parentFrame;
-
     private static JMenu manufacturerMenu;
     private static String currentManufacturer = "Apple";
 
-    public DisplayAllSKU(JFrame parentFrame, Staff loggedInStaff, Branch currentBranch, Person[] people, Branch[] branches) {
-        this.parentFrame = parentFrame;
-        parentFrame.dispose();
+    public DisplayAllSKU(Menu menu) {
+        JFrame frame = new JFrame("Product Viewer");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
 
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Product Viewer");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(800, 600);
+        // Create table model
+        tableModel = new DefaultTableModel();
+        tableModel.addColumn("SKU");
+        tableModel.addColumn("Model");
+        tableModel.addColumn("RAM");
+        tableModel.addColumn("ROM");
+        tableModel.addColumn("Color");
+        tableModel.addColumn("Price");
+        tableModel.addColumn("Type");
 
-            // Create table model
-            tableModel = new DefaultTableModel();
-            tableModel.addColumn("SKU");
-            tableModel.addColumn("Model");
-            tableModel.addColumn("RAM");
-            tableModel.addColumn("ROM");
-            tableModel.addColumn("Color");
-            tableModel.addColumn("Price");
-            tableModel.addColumn("Type");
+        // Create table and add to frame
+        table = new JTable(tableModel);
+        JScrollPane scrollPane = new JScrollPane(table);
+        frame.add(scrollPane, BorderLayout.CENTER);
 
-            // Create table and add to frame
-            table = new JTable(tableModel);
-            JScrollPane scrollPane = new JScrollPane(table);
-            frame.add(scrollPane, BorderLayout.CENTER);
+        JMenuBar menuBar = new JMenuBar();
+        manufacturerMenu = new JMenu(currentManufacturer + " ↓");
+        menuBar.add(manufacturerMenu);
 
-            JMenuBar menuBar = new JMenuBar();
-            manufacturerMenu = new JMenu(currentManufacturer + " ↓");
-            menuBar.add(manufacturerMenu);
+        // Add manufacturer options to menu (replace with your actual file names)
+        addManufacturerMenuItem(manufacturerMenu, "Apple", "aux_files/all_txt/Apple.txt");
+        addManufacturerMenuItem(manufacturerMenu, "Samsung", "aux_files/all_txt/Samsung.txt");
+        addManufacturerMenuItem(manufacturerMenu, "POCO", "aux_files/all_txt/POCO.txt");
+        addManufacturerMenuItem(manufacturerMenu, "Nothing", "aux_files/all_txt/Nothing.txt");
+        addManufacturerMenuItem(manufacturerMenu, "Xiaomi", "aux_files/all_txt/Xiaomi.txt");
 
-            // Add manufacturer options to menu (replace with your actual file names)
-            addManufacturerMenuItem(manufacturerMenu, "Apple", "aux_files/all_txt/Apple.txt");
-            addManufacturerMenuItem(manufacturerMenu, "Samsung", "aux_files/all_txt/Samsung.txt");
-            addManufacturerMenuItem(manufacturerMenu, "POCO", "aux_files/all_txt/POCO.txt");
-            addManufacturerMenuItem(manufacturerMenu, "Nothing", "aux_files/all_txt/Nothing.txt");
-            addManufacturerMenuItem(manufacturerMenu, "Xiaomi", "aux_files/all_txt/Xiaomi.txt");
+        // Create type filter JComboBox
+        typeFilterComboBox = new JComboBox<>();
+        typeFilterComboBox.addItem("All");
 
-            // Create type filter JComboBox
-            typeFilterComboBox = new JComboBox<>();
-            typeFilterComboBox.addItem("All");
+        frame.setJMenuBar(menuBar);
+        frame.setVisible(true);
 
-            frame.setJMenuBar(menuBar);
-            frame.setVisible(true);
+        // Load initial data
+        loadProductsFromFile("aux_files/all_txt/Apple.txt");
 
-            // Load initial data
-            loadProductsFromFile("aux_files/all_txt/Apple.txt");
+        // Get unique types from productList after initial load
+        Set<String> uniqueTypes = getUniqueTypes(readProductsFromFile("aux_files/all_txt/Apple.txt"));
+        for (String type : uniqueTypes) {
+            typeFilterComboBox.addItem(type);
+        }
 
-            // Get unique types from productList after initial load
-            Set<String> uniqueTypes = getUniqueTypes(readProductsFromFile("aux_files/all_txt/Apple.txt"));
-            for (String type : uniqueTypes) {
-                typeFilterComboBox.addItem(type);
+        typeFilterComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedType = (String) typeFilterComboBox.getSelectedItem();
+                filterTableByType(selectedType);
             }
-
-            typeFilterComboBox.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    String selectedType = (String) typeFilterComboBox.getSelectedItem();
-                    filterTableByType(selectedType);
-                }
-            });
-
-            // Add JComboBox and search field to frame
-            JPanel filterPanel = new JPanel();
-            filterPanel.add(new JLabel("Filter by Type:"));
-            filterPanel.add(typeFilterComboBox);
-
-            JTextField searchField = new JTextField(20);
-            searchField.addKeyListener(new KeyAdapter() {
-                @Override
-                public void keyReleased(KeyEvent e) {
-                    String searchText = searchField.getText();
-                    filterTableBySearch(searchText);
-                }
-            });
-            filterPanel.add(new JLabel("Search:"));
-            filterPanel.add(searchField);
-
-            frame.add(filterPanel, BorderLayout.NORTH);
-
-            // Back button
-            JButton backButton = new JButton("Back to Menu");
-            backButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e)
-                {
-                    frame.dispose();
-                    new Menu(loggedInStaff, currentBranch, people, branches);
-                }
-            });
-
-            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-            buttonPanel.add(backButton);
-            frame.add(buttonPanel, BorderLayout.SOUTH);
         });
+
+        // Add JComboBox and search field to frame
+        JPanel filterPanel = new JPanel();
+        filterPanel.add(new JLabel("Filter by Type:"));
+        filterPanel.add(typeFilterComboBox);
+
+        JTextField searchField = new JTextField(20);
+        searchField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                String searchText = searchField.getText();
+                filterTableBySearch(searchText);
+            }
+        });
+        filterPanel.add(new JLabel("Search:"));
+        filterPanel.add(searchField);
+
+        frame.add(filterPanel, BorderLayout.NORTH);
+
+        // Back button
+        JButton backButton = new JButton("Back to Menu");
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                menu.setVisible(true);
+            }
+        });
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(backButton);
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+
+        frame.setVisible(true);
     }
 
     private static void addManufacturerMenuItem(JMenu menu, String manufacturerName, String fileName) {
