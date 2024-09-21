@@ -1,5 +1,5 @@
 Staff|ST001|Tfs-0316|W001|Tiong Fatt Siong|fattsiong@gmail.com|16/03/2005|01159424214
-Staff|ST002|@StoreStaff1|S001|Liow Zhen Bang - S|zbqr@gmail.com|12/05/2005|0167719430
+Staff|ST002|@StoreStaff12|S001|Liow Zhen Bang|zhenbangliow@gmail.com|12/05/2005|0167719430
 Staff|ST003|@WarehouseStaff1|W001|Liow Zhen Bang - W|zbqr@gmail.com|12/05/2005|0167719430
 Staff|ST004|@StoreStaff2|S002|Melvin Wong Ka Kian|mwkk@gmail.com|22/09/2005|0167711234
 Supplier|SP001|Selangor|POCO|POCO Distributions MY|pocodist@gmail.com|28/08/2020|0123244321
